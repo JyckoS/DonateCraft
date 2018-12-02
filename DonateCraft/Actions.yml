@@ -1,0 +1,47 @@
+Actions:
+   VIPACTION:
+   - "%CGUI"
+   - "%BCST&e&l[!] &6Thank you &e$p &6for buying VIP!"
+   - "manuaddp $p essentials.fly"
+   - "eco give $p 1000"
+   - "%TITL&a&lPurchase Complete-&f&l VIP &a&lpurchased."
+
+   BUYPERK_RABBIT:
+   - "%CGUI"
+   - "%BCST&e&l[!] &6Thank you &e$p &6for buying the perk: &fRabbit&6!"
+   - "effect $p minecraft:jump_boost 100000 10"
+   - "%TITL&a&lPurchase Complete-&f&l Rabbit Perk &a&lpurchased."
+
+   BUYPERK_BUTTERFLY:
+   - "%CGUI"
+   - "%BCST&e&l[!] &6Thank you &e$p &6for buying the perk: &dButterfly&6!"
+   - "manuaddp $p essentials.fly"
+   - "%TITL&a&lPurchase Complete-&d&l Butterfly Perk &a&lpurchased."
+
+   MVIPACTION:
+   - "%CGUI"
+   - "%BCST&e&l[!] &6Thank you &e$p &6for buying MVIP!"
+   - "manuaddp $p essentials.fly"
+   - "eco give $p 10000"
+   - "%TITL&a&lPurchase Complete-&f&l MVIP &a&lpurchased."
+
+   NOTHING:
+   - "%CANC"
+
+   OPEN_RANK:
+   - "%OGUIRanks"
+   - "%ACBR&cOpening Ranks"
+   - "%SNDSBLOCK_NOTE_PLING-1.0-2.0"
+
+   OPEN_PERK:
+   - "%OGUIPerks"
+   - "%ACBR&cOpening Perks"
+   - "%SNDSBLOCK_NOTE_PLING-1.0-2.0"
+
+   OPEN_MAIN:
+   - "%OGUIMain"
+   - "%ACBR&eReturning to Main Menu.."
+   - "%SNDSBLOCK_NOTE_PLING-1.0-2.0"
+
+   CELEBRATE_PURCHASE:
+   - "%ACBR&2&l< &a&lPurchase Succeed! &2&l>"

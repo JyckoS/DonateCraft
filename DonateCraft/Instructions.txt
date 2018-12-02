@@ -1,0 +1,58 @@
+-----------------
+DONATECRAFT
+by Jicko Sianjaya
+-----------------
+
+###############
+  LISTEN!
+###############
+0. Everything needs to be set  up first!
+1. **OPEN ACTIONS.YML** yes, this one is very important, you need to add actions for later use
+2. First, set the Items.yml according to your imagination.
+3. Second, set the GUI.yml
+4. (Optional) set lang.yml
+5. (Optional) set config.yml
+6. You're good to go! Use /dc reload or just restart!
+
+
+
+
+List of Action Placeholders:
+- %CGUI - Close the player's current GUI
+- %CANC - Does nothing
+- %OGUI<GUINAME> - Opens the gui for the player
+- %BCST<MESSAGE> - Message something globally
+- %MSGS<MSG> - Send a message to the player
+- %SNDS<SOUND>-<VOLUME>-<PITCH> - Play a sound to the player
+- %TITL<TITLE>-<SUBTITLE> - Send a title & subtitle to the player
+- %ACBR<NESSAGE> - Sends an actionbar to player
+- %PCMD<COMMAND> - Execute the command from player
+- %ITEM<MATERIAL>-<DURABILITY>-<AMOUNT>
+
+Variables:
+- $p - Displays player name
+- $cash - Displays Player's Cash
+- $acash - Displays Player's Accumulated Cash
+
+################
+     FILES
+################
+Items.yml: Keep the item & the action
+GUI.yml: Keeps the GUIS
+lang.yml: Keeps the messages
+Redeems.yml (Dont touch): Keeps the redeem
+
+################
+   PERMISSIONS
+################
+donatecraft.admin - All Access to /dc
+cash.admin - Access to /cash set <Player>
+donatecraft.redeem - Access to be able to /redeem
+
+###############
+   COMMANDS
+###############
+- /cash set <Player> or /cash
+- /store opens the gui Main
+- /dc command for admin
+- /redeem redeem the code

@@ -1,0 +1,24 @@
+name: DonateCraft
+version: 1.0.0
+author: Gober
+main: com.gmail.JyckoSianjaya.DonateCraft.Main.DonateCraft
+description: Managing Donation has never been this easy!
+commands:
+   redeem:
+     usage: /<command>
+     aliases: [recoup, retrieve]
+     description: Redeem your code!
+   store:
+     usage: /<command>
+     description: Open the main store gui!
+   donatecraft:
+     usage: /<command>
+     aliases: [dc, dcr]
+     description: Use the donatecraft admin commands!
+   cash:
+     usage: /<command>
+     description: Check or manage cashes!
+   acash:
+     usage: /<command>
+     aliases: [accash, accumulatedcash]
+     description: Check your accumulated cash!

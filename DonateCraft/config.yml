@@ -1,0 +1,55 @@
+current_discount: 10.0
+# DISCOUNT IN PERCENTAGE
+
+confirmation:
+  size: 27
+  title: "&6&l** &e&lConfirm your Purchase &6&l**"
+  items:
+     variable:
+        name: "%ORIGINALNAME% &7[Confirm Purchase]"
+        lores:
+        - "&e&m                            "
+        - "&f You will buy this item for &e%s &7(From &6&m%o&7) "
+        - "&e&m                            "
+        use_original_lore: false
+        use_original_material: true
+        material: CHEST
+        durability: 0
+        slot: 13
+        action: NOTHING
+     confirm_yes:
+        name: "&b[Confirm] &a&lYes!"
+        lores:
+        - "&7Click to &aconfirm &7purchase."
+        material: STAINED_GLASS_PANE
+        durability: 5
+        action: "CELEBRATE_PURCHASE"
+        slot: 12
+     confirm_no:
+        name: "&b[Confirm] &c&lNo!"
+        lores:
+        - "&7Click to &ccancel&7 your purchase."
+        material: STAINED_GLASS_PANE
+        durability: 14
+        back_to_original_gui: true
+        action: "NOTHING"
+        slot: 14
+     neutral_items:
+         0: "NEUTRAL3"
+         1: "NEUTRAL3"
+         2: "NEUTRAL3"
+         3: "NEUTRAL3"
+         4: "NEUTRAL3"
+         5: "NEUTRAL3"
+         6: "NEUTRAL3"
+         7: "NEUTRAL3"
+         8: "NEUTRAL3"
+         26: "NEUTRAL3"
+         25: "NEUTRAL3"
+         24: "NEUTRAL3"
+         23: "NEUTRAL3"
+         22: "NEUTRAL3"
+         21: "NEUTRAL3"
+         20: "NEUTRAL3"
+         19: "NEUTRAL3"
+         18: "NEUTRAL3"

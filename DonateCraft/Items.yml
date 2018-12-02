@@ -1,0 +1,185 @@
+Items:
+  BUYVIP:
+    ITEM_NAME: "&a&m--&a&l Purchase VIP&a&m--"
+    ITEM_LORE:
+    - "  "
+    - "&6&lCost: &e25000 Cash"
+    - "  "
+    MATERIAL: EMERALD
+    BLACKLISTED_PERM: "purchased.vip"
+    REQUIRED_PERM: "buy.vip"
+    DURABILITY: 0
+    COST: 25000
+    ACTION: "VIPACTION"
+  BUYMVIP:
+    ITEM_NAME: "&1&m--&b&l Purchase MVIP&1&m--"
+    ITEM_LORE:
+    - "  "
+    - "&6&lCost: &e50000 Cash"
+    - "  "
+    MATERIAL: DIAMOND
+    BLACKLISTED_PERM: "purchased.mvip"
+    REQUIRED_PERM: "buy.mvip"
+    DURABILITY: 0
+    COST: 50000
+    ACTION: "MVIPACTION"
+  BUYRANK:
+    ITEM_NAME: "&6&m  &6&l Purchase &f<Your Rank Here>&6&m  "
+    ITEM_LORE:
+    - "  "
+    - "&6&lCost: &e<Your Price Here> Cash"
+    - "  "
+    MATERIAL: STRING
+    BLACKLISTED_PERM: "purchased.rankname"
+    REQUIRED_PERM: "buy.rankname"
+    DURABILITY: 0
+    COST: 100
+    ACTION: "NOTHING"
+  BUYPERK1:
+    ITEM_NAME: "&e&lBuy Perk: &f<Your Perk Name Here>"
+    ITEM_LORE:
+    - "  "
+    - "&6&lCost: &e<Price Here> Cash"
+    - "  "
+    MATERIAL: REDSTONE
+    BLACKLISTED_PERM: "purchased.specificperk"
+    REQUIRED_PERM: "buy.specificperk"
+    DURABILITY: 0
+    COST: 100
+    ACTION: "NOTHING"
+  BUYPERK_RABBIT:
+    ITEM_NAME: "&e&lBuy Perk: &aRabbit &7(Permanent)"
+    ITEM_LORE:
+    - "&eThis will grant you  "
+    - "&ethe potion effect: &fJump Boost  "
+    - "  "
+    - "&6&lCost: &e5000 Cash"
+    - "  "
+    MATERIAL: GOLDEN_CARROT
+    BLACKLISTED_PERM: "purchased.rabbit"
+    REQUIRED_PERM: "buyperk.rabbit"
+    DURABILITY: 0
+    COST: 5000
+    ACTION: "BUYPERK_RABBIT"
+  BUYPERK_BFLY:
+    ITEM_NAME: "&e&lBuy Perk: &dButterfly &7(Permanent)"
+    ITEM_LORE:
+    - "&eThis will grant you  "
+    - "&ethe permission to: &f/Fly  "
+    - "  "
+    - "&6&lCost: &e15000 Cash"
+    - "  "
+    MATERIAL: ELYTRA
+    BLACKLISTED_PERM: "purchased.rabbit"
+    REQUIRED_PERM: "buyperk.rabbit"
+    DURABILITY: 0
+    COST: 15000
+    ACTION: "BUYPERK_BUTTERFLY"
+  NEUTRAL:
+    ITEM_NAME: "&a  "
+    ITEM_LORE:
+    - "  "
+    - " &e&lDonation Store "
+    - "  "
+    MATERIAL: STAINED_GLASS_PANE
+    BLACKLISTED_PERM: "none"
+    REQUIRED_PERM: "none"
+    DURABILITY: 15
+    COST: 0
+    ACTION: "NOTHING"
+  NEUTRALP:
+    ITEM_NAME: "&a  "
+    ITEM_LORE:
+    - "  "
+    - " &b&l Perk Store "
+    - "  "
+    MATERIAL: STAINED_GLASS_PANE
+    BLACKLISTED_PERM: "none"
+    REQUIRED_PERM: "none"
+    DURABILITY: 10
+    COST: 0
+    ACTION: "NOTHING"
+  NEUTRALRANK:
+    ITEM_NAME: "  "
+    ITEM_LORE:
+    - "  "
+    - " &7 Purchase your rank! "
+    - "  "
+    MATERIAL: STAINED_GLASS_PANE
+    BLACKLISTED_PERM: "none"
+    REQUIRED_PERM: "none"
+    DURABILITY: 9
+    COST: 0
+    ACTION: "NOTHING"
+  NEUTRAL2:
+    ITEM_NAME: "&a  "
+    ITEM_LORE:
+    - "  "
+    - " &d&lRank Store "
+    - "  "
+    MATERIAL: STAINED_GLASS_PANE
+    BLACKLISTED_PERM: "none"
+    REQUIRED_PERM: "none"
+    DURABILITY: 1
+    COST: 0
+    ACTION: "NOTHING"
+  NEUTRAL3:
+    ITEM_NAME: "&a  "
+    ITEM_LORE:
+    - "  "
+    - " &e*Please confirm your purchase* "
+    - "  "
+    MATERIAL: STAINED_GLASS_PANE
+    BLACKLISTED_PERM: "none"
+    REQUIRED_PERM: "none"
+    DURABILITY: 15
+    COST: 0
+    ACTION: "NOTHING"
+  GOTO_RANK:
+    ITEM_NAME: "&e&l&m       &e&l> &6&lRanks"
+    ITEM_LORE:
+    - "  "
+    - " &e&lVisit Rank Store "
+    - "  "
+    MATERIAL: GOLD_BLOCK
+    BLACKLISTED_PERM: "none"
+    REQUIRED_PERM: "none"
+    DURABILITY: 0
+    COST: 0
+    ACTION: "OPEN_RANK"
+  GOTO_PERK:
+    ITEM_NAME: "&c&l&m       &c&l> &4&lPerks  "
+    ITEM_LORE:
+    - "  "
+    - " &e&lVisit Rank Store "
+    - "  "
+    MATERIAL: REDSTONE
+    BLACKLISTED_PERM: "none"
+    REQUIRED_PERM: "none"
+    DURABILITY: 0
+    COST: 0
+    ACTION: "OPEN_PERK"
+  GOTO_OTHER:
+    ITEM_NAME: "&9&l&m       &c&l> &b&lYour Shop Name here  "
+    ITEM_LORE:
+    - "  "
+    - " &e&lVisit <Your Shop> Store "
+    - "  "
+    MATERIAL: CHEST
+    BLACKLISTED_PERM: "none"
+    REQUIRED_PERM: "none"
+    DURABILITY: 0
+    COST: 0
+    ACTION: "NOTHING"
+  BACK:
+    ITEM_NAME: "&a  "
+    ITEM_LORE:
+    - "  "
+    - " &7<&m  &r Back to Main Menu "
+    - "  "
+    MATERIAL: ARROW
+    BLACKLISTED_PERM: "this.unneccessary"
+    REQUIRED_PERM: "none"
+    DURABILITY: 0
+    COST: 0
+    ACTION: "OPEN_MAIN"

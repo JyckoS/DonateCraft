@@ -1,0 +1,69 @@
+no_permission: "&c&lOops! &7You don't have permission to do that!"
+
+redeem_success:
+- "%center%&a&lSuccess!"
+- "%center%&7Your cash is now: &e%CASH% &lcash&7!"
+
+redeem_help:
+- "&6&l> &e&lRedeem"
+- "&7Use /redeem &f<code> &7and get your reward!"
+- " "
+- "&b&lTIP: &fYou can purchase redeem code at our Store." 
+
+redeem_failure:
+- "%center%&c&l Failure!"
+- "%center%&7That redeem code doesn't exist!"
+
+show_cash:
+- "&6&lCash"
+- "&7You have: &f%CASH% &ecashes."
+
+show_accumulated_cash:
+- "&a&lAccumulated Cash&r"
+- "&7You have accumulated: &f%CASH% &7ac-cash "
+
+show_accumulated_cash_others:
+- "&a&lAccumulated Cash"
+- "&f%p &7has: &f%CASH% &7ac-cash."
+
+show_cash_others:
+- "&6&lCash"
+- "&f%p &7has: &e%CASH% &7cash."
+
+blacklisted_perm:
+- "&c&lOops! &7You can't buy that item anymore!"
+
+required_perm_deny:
+- "&c&lOops! &7You can't buy that item yet!"
+
+not_a_number:
+- "&c&lOops! &7That's not a number!"
+
+not_enough_cash:
+- "&c&lOops! &7You don't have enough cash to do that, you need &6%MORE%&7 more!"
+
+cash_top:
+  format: "%center%&f(&6&l%RANK%&f) &e%p &m &7 %cash% cash"
+  opening:
+  - "%center%&6&lCash Top"
+  - "%center%&e(&7Top &e%r &7to &f%m&e)"
+  - "%center%&6&m                                "
+  closing:
+  - "%center%&6&m                                "
+
+ac_cash_top:
+  format: "%center%&f(&2&l%RANK%&f) &a%p &m &r %cash% cash"
+  opening:
+  - "%center%&a&lMost Donations"
+  - "%center%&2(&7Top &e%r &7to &f%m&2)"
+  - "%center%&2&m                       "
+  closing:
+  - "%center%&2&m                       "
+
+broadcast:
+   broadcast_redeems: true
+   message_red:
+   - "%center%&e&m--------------------------"
+   - "%center%&a%PLAYER% &7has redeemed a code and received"
+   - "%center%&e%CASH% &lcash&7!"
+   - "%center%&e&m--------------------------"
