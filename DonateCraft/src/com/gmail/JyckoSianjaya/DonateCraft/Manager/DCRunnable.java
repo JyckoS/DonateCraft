@@ -13,6 +13,7 @@ public final  class DCRunnable {
 		new BukkitRunnable() {
 			@Override
 			public final void run() {
+				synchronized(this) {
 				for (final DCTask task : new ArrayList<DCTask>(tasks)) {
 					if (task.getLiveTicks() < 1) {
 						removeTask(task);
@@ -20,6 +21,7 @@ public final  class DCRunnable {
 					}
 					task.runTask();
 					task.reduceTicks();
+				}
 				}
 			}
 		}.runTaskTimerAsynchronously(DonateCraft.getInstance(), 1L, 1L);
