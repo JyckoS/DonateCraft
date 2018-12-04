@@ -11,12 +11,12 @@ import org.bukkit.inventory.InventoryHolder;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.ConfirmationHolder;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.DCHolder;
 
-public class DCEvents implements Listener {
-	private DCEventHandler eventhandler = DCEventHandler.getInstance();
+public final  class DCEvents implements Listener {
+	private final DCEventHandler eventhandler = DCEventHandler.getInstance();
 	@EventHandler
-	public void onInventoryClick(InventoryClickEvent e) {
+	public final void onInventoryClick(final InventoryClickEvent e) {
 		// Manage inventory click
-		InventoryHolder ie = e.getInventory().getHolder();
+		final InventoryHolder ie = e.getInventory().getHolder();
 		if (ie instanceof DCHolder) {
 		eventhandler.ManageInventoryClickEvent(e);
 		}
@@ -26,11 +26,11 @@ public class DCEvents implements Listener {
 		
 	}
 	@EventHandler
-	public void onQuit(PlayerQuitEvent e) {
+	public final void onQuit(final PlayerQuitEvent e) {
 		eventhandler.ManagePlayerQuit(e);
 	}
 	@EventHandler
-	public void onJoin(PlayerJoinEvent e) {
+	public final void onJoin(final PlayerJoinEvent e) {
 		eventhandler.ManagePlayerJoin(e);
 	}
 

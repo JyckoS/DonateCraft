@@ -12,7 +12,7 @@ import com.gmail.JyckoSianjaya.DonateCraft.Objects.ACWallet;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.Cash;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 
-public class PlayerData {
+public final class PlayerData {
 	private static PlayerData instance;
 	private final DonateCraft MainInst = DonateCraft.getInstance();
 	private final CashBank cbank = CashBank.getInstance();

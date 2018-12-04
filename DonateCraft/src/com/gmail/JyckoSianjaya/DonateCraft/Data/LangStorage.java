@@ -10,7 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import com.gmail.JyckoSianjaya.DonateCraft.Main.DonateCraft;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 
-public class LangStorage {
+public final class LangStorage {
 	private static LangStorage instance;
 	private static String MSG_NOPERM;
 	private final HashMap<Message, String> shortmsg = new HashMap<Message, String>();

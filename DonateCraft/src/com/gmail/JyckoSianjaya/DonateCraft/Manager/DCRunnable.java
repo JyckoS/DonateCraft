@@ -6,14 +6,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.gmail.JyckoSianjaya.DonateCraft.Main.DonateCraft;
 
-public class DCRunnable {
+public final  class DCRunnable {
 	private static DCRunnable instance;
-	private ArrayList<DCTask> tasks = new ArrayList<DCTask>();
+	private final ArrayList<DCTask> tasks = new ArrayList<DCTask>();
 	private DCRunnable() {
 		new BukkitRunnable() {
 			@Override
-			public void run() {
-				for (DCTask task : new ArrayList<DCTask>(tasks)) {
+			public final void run() {
+				for (final DCTask task : new ArrayList<DCTask>(tasks)) {
 					if (task.getLiveTicks() < 1) {
 						removeTask(task);
 						continue;
@@ -24,14 +24,14 @@ public class DCRunnable {
 			}
 		}.runTaskTimerAsynchronously(DonateCraft.getInstance(), 1L, 1L);
 	}
-	public static DCRunnable getInstance() {
+	public final static DCRunnable getInstance() {
 		if (instance == null) instance = new DCRunnable();
 		return instance;
 	}
-	public void addTask(DCTask task) {
+	public final void addTask(DCTask task) {
 		tasks.add(task);
 	}
-	public void removeTask(DCTask task) {
+	public final void removeTask(DCTask task) {
 		tasks.remove(task);
 	}
 }
