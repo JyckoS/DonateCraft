@@ -36,27 +36,27 @@ import com.gmail.JyckoSianjaya.DonateCraft.Objects.RedeemCode;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.XSound;
 
-public class AdminCmdHandler {
-	private LangStorage lstorage = LangStorage.getInstance();
+public final class AdminCmdHandler {
+	private final LangStorage lstorage = LangStorage.getInstance();
 	private static AdminCmdHandler instance;
-	private InventoryStorage istorage = InventoryStorage.getInstance();
-	private ActionStorage astorage = ActionStorage.getInstance();
-	private ItemStorage Istorage = ItemStorage.getInstance();
-	private DonateCraft minstance = DonateCraft.getInstance();
+	private final InventoryStorage istorage = InventoryStorage.getInstance();
+	private final ActionStorage astorage = ActionStorage.getInstance();
+	private final ItemStorage Istorage = ItemStorage.getInstance();
+	private final DonateCraft minstance = DonateCraft.getInstance();
 	private AdminCmdHandler() {
 	}
-	public static AdminCmdHandler getInstance() {
+	public static final AdminCmdHandler getInstance() {
 		if (instance == null) {
 			instance = new AdminCmdHandler();
 		}
 		return instance;
 	}
-	public void ManageAdminCmd(CommandSender sender, Command cmd, String[] args) {
+	public final void ManageAdminCmd(final CommandSender sender, final Command cmd, final String[] args) {
 		if (!sender.hasPermission("donatecraft.admin")) {
 			Utility.sendMsg(sender, lstorage.getMessage(Message.NOPERM));
 			return;
 		}
-		int length = args.length;
+		final int length = args.length;
 		if (length < 1) {
 			Utility.sendMsg(sender, " ");
 			Utility.sendMsg(sender, "        &6&lDonate&e&lCraft &8&lV.&8" + minstance.getDescription().getVersion());
@@ -72,16 +72,16 @@ public class AdminCmdHandler {
 				return;
 			}
 			else {
-			String arg = args[1].toUpperCase();
+			final String arg = args[1].toUpperCase();
 			switch (arg) {
 			case "ACTION":
 			case "ACTIONS":
 			case "ACTS":
 			case "ACT":
-				Collection<String> actions = astorage.getKeys();
+				final Collection<String> actions = astorage.getKeys();
 				Utility.sendMsg(sender, "&e&l&nActions");
 				String rractions = "&7There is: ";
-				for (String str : actions) {
+				for (final String str : actions) {
 					rractions = rractions + "&e" + str + "&7, ";
 				}
 				Utility.sendMsg(sender, rractions);
@@ -91,31 +91,31 @@ public class AdminCmdHandler {
 			case "REDEEMCODES":
 			case "RCODE":
 			case "CODE":
-				List<RedeemCode> codes = RedeemStorage.getInstance().getRedeemCodes();
+				final List<RedeemCode> codes = RedeemStorage.getInstance().getRedeemCodes();
 				Utility.sendMsg(sender, "&b&l&nCODES");
 				String fcode = "&7Codes: ";
-				for (RedeemCode code : codes) {
-					String ic = code.getCode();
-					int amount = code.getCash().getCashAmount();
+				for (final RedeemCode code : codes) {
+					final String ic = code.getCode();
+					final int amount = code.getCash().getCashAmount();
 					fcode = fcode + "&a" + ic + "&9(&b" + amount + "&9)" + "&7, ";
 				}
 				Utility.sendMsg(sender, fcode);
 				return;
 			case "GUI":
-				Collection<String> guiname = istorage.getKeys();
+				final Collection<String> guiname = istorage.getKeys();
 				Utility.sendMsg(sender, "&6&l&m--&6&l> &eGUI(s)");
 				String cguis = "&7There are: &f";
-				for (String str : guiname) {
+				for (final String str : guiname) {
 					cguis = cguis + "&e" + str + "&7, ";
 				}
 				Utility.sendMsg(sender, cguis);
 				return;
 			case "ITEMS":
 			case "ITEM":
-				ItemStorage itemstorage = ItemStorage.getInstance();
-				Collection<String> items = itemstorage.getKeys();
+				final ItemStorage itemstorage = ItemStorage.getInstance();
+				final Collection<String> items = itemstorage.getKeys();
 				String item = "&7The available items are: &a";
-				for (String str : items) {
+				for (final String str : items) {
 					item = item + str + "&7, &a";
 				}
 				Utility.sendMsg(sender, item);
@@ -167,17 +167,17 @@ public class AdminCmdHandler {
 					Utility.sendMsg(sender, "&eYou're not player!");
 					return;
 				}
-				Player player = (Player) sender;
+				final Player player = (Player) sender;
 				if (length < 2) {
 					Utility.sendMsg(sender, "&7█ &6/dc &cgetItem <ITEMNAME>");
 					return;
 				}
-				String itemkey = args[1];
+			final	String itemkey = args[1];
 				if (Istorage.getItem(itemkey) == null) {
 					Utility.sendMsg(player, "&c&l█ &7That item doesn't exist!");
 					return;
 				}
-				ItemStack item = Istorage.getItem(itemkey);
+				final ItemStack item = Istorage.getItem(itemkey);
 				player.getInventory().addItem(item);
 				Utility.sendMsg(player, "&a&l█ &7Item successfully added to your inventory!");
 				if (isPlayer(sender)) {
@@ -192,9 +192,9 @@ public class AdminCmdHandler {
 				try {
 				url = new URL("https://pastebin.com/raw/hfq3rsZx");
 				scanner = new Scanner(url.openStream());
-				String str = scanner.nextLine();
-				PluginDescriptionFile dcpf = DonateCraft.getInstance().getDescription();
-				String dc = dcpf.getVersion();
+				final String str = scanner.nextLine();
+				final PluginDescriptionFile dcpf = DonateCraft.getInstance().getDescription();
+				final String dc = dcpf.getVersion();
 				scanner.close();
 				if (isPlayer(sender)) {
 					Utility.PlaySound((Player) sender, XSound.VILLAGER_YES.bukkitSound(), 1.0F, 1.5F);
@@ -221,7 +221,7 @@ public class AdminCmdHandler {
 				Utility.sendMsg(sender, "&7█ &6/dc &copen <GUINAME> &7<PlAYER>");
 				return;
 			}
-			String guiname = args[1];
+			final String guiname = args[1];
 			if (!istorage.hasKey(guiname)) {
 				Utility.sendMsg(sender, "&c&lOops! &7That GUI doesn't exist!");
 				return;
@@ -249,8 +249,8 @@ public class AdminCmdHandler {
 				Utility.sendMsg(sender, "&c&l█ &7Please use &e/dc removecode &9<KEY>");
 				return;
 			}
-			String removecode = args[1];
-			RedeemStorage rs = RedeemStorage.getInstance();
+			final String removecode = args[1];
+			final RedeemStorage rs = RedeemStorage.getInstance();
 			if (removecode.equals("all")) {
 				rs.clearCodes();
 				Utility.sendMsg(sender, "&a&l█ &7Successfully cleaned up all redeem codes, no redeem codes left.");
@@ -260,7 +260,7 @@ public class AdminCmdHandler {
 				Utility.sendMsg(sender, "&c&l█ &7That code doesn't exist!");
 				return;
 			}
-			RedeemCode code = rs.getRedeemCode(removecode);
+			final RedeemCode code = rs.getRedeemCode(removecode);
 			rs.removeCode(code);
 			if (isPlayer(sender)) {
 				Utility.PlaySound((Player) sender, XSound.ANVIL_LAND.bukkitSound(), 1.0F, 0.5F);
@@ -271,21 +271,21 @@ public class AdminCmdHandler {
 		case "action":
 			if (length < 2) {
 			String actions = "&a&lActions: &6";
-			Collection<String> aa = astorage.getKeys();
-			for (String act : aa) {
+			final Collection<String> aa = astorage.getKeys();
+			for (final String act : aa) {
 				actions = actions + act + "&7, &6";
 			}
 			Utility.sendMsg(sender, "actions");
 			return;
 			}
-			String actkey = args[1];
-			Action act = astorage.getAction(actkey);
+			final String actkey = args[1];
+			final Action act = astorage.getAction(actkey);
 			if (act == null) {
 				Utility.sendMsg(sender, "&c&l█ &7That action does not exist!");
 			}
 			Utility.sendMsg(sender, "&e&l&m          &r &6&lCommands &e&l&m          ");
 			Utility.sendMsg(sender, "   ");
-			for (String ac : act.getCommands()) {
+			for (final String ac : act.getCommands()) {
 				Utility.sendMsg(sender, ac);
 			}
 			Utility.sendMsg(sender, "   ");
@@ -298,7 +298,7 @@ public class AdminCmdHandler {
 		case "diskon":
 		case "disc":
 			if (length < 2) {
-				Double cd = DataStorage.getInstance().getRawDiscount();
+				final Double cd = DataStorage.getInstance().getRawDiscount();
 				Utility.sendMsg(sender, "&a&l█ &aYou mean current discount? It's &f" + cd + "&f&o%");
 				Utility.sendMsg(sender, "&7█ &6/dc &cdiscount <PERCENTAGE> &7- e.g: 30, 40, etc. Means discount 30 percent.");
 				return;
@@ -310,10 +310,10 @@ public class AdminCmdHandler {
 				Utility.sendMsg(sender, "&eThat's not a double!");
 				return;
 			}
-			DataStorage dstorage = DataStorage.getInstance();
+			final DataStorage dstorage = DataStorage.getInstance();
 			dstorage.setDiscount(discount);
-			File fconfig = new File(DonateCraft.getInstance().getDataFolder(), "config.yml");
-			YamlConfiguration config = YamlConfiguration.loadConfiguration(fconfig);
+			final File fconfig = new File(DonateCraft.getInstance().getDataFolder(), "config.yml");
+			final YamlConfiguration config = YamlConfiguration.loadConfiguration(fconfig);
 			config.set("current_discount", discount);
 			try {
 				config.save(fconfig);
@@ -347,8 +347,8 @@ public class AdminCmdHandler {
 				Utility.sendMsg(sender, "&c&l█ &7That's not a number");
 				return;
 			}
-			Cash result = new Cash(Integer.parseInt(args[2]));
-			String newcode = args[1];
+			final Cash result = new Cash(Integer.parseInt(args[2]));
+			final String newcode = args[1];
 			for (RedeemCode a : RedeemStorage.getInstance().getRedeemCodes()) {
 				if (a.getCode().equals(newcode)) {
 					Utility.sendMsg(sender, "&c&l█ &7Oops, there is also a code named: '&f&o" + newcode + "&e'");
@@ -357,13 +357,13 @@ public class AdminCmdHandler {
 			}
 			if (newcode.toLowerCase().equals("random")) {
 				String base = "";
-				Random random = new Random();
-				int ra = random.nextInt(10000);
-				int ra2 = random.nextInt(10000);
-				int ra3 = random.nextInt(10000);
-				int ra4 = random.nextInt(10000);
+				final Random random = new Random();
+				final int ra = random.nextInt(10000);
+				final int ra2 = random.nextInt(10000);
+				final int ra3 = random.nextInt(10000);
+				final int ra4 = random.nextInt(10000);
 				base = ra + "-" + ra2 + "-" + ra3 + "-" + ra4;
-				for (RedeemCode a : RedeemStorage.getInstance().getRedeemCodes()) {
+				for (final RedeemCode a : RedeemStorage.getInstance().getRedeemCodes()) {
 					if (a.getCode() == base) {
 						Utility.sendMsg(sender, "&c&l█ &7Oops, there is also a code named: '&f&o" + newcode + "&e'");
 						return;
@@ -373,7 +373,7 @@ public class AdminCmdHandler {
 				RedeemStorage.getInstance().addCode(new RedeemCode(base, result));
 				return;
 			}
-			for (RedeemCode a : RedeemStorage.getInstance().getRedeemCodes()) {
+			for (final RedeemCode a : RedeemStorage.getInstance().getRedeemCodes()) {
 				if (a.getCode().equals(newcode)) {
 					Utility.sendMsg(sender, "&c&l█ &7Oops, there is also a code named: '&f&o" + newcode + "&e'");
 					return;
@@ -398,10 +398,10 @@ public class AdminCmdHandler {
 			return;
 		}
 	}
-	private boolean isPlayer(CommandSender sender) {
+	private boolean isPlayer(final CommandSender sender) {
 		return sender instanceof Player;
 	}
-	private String Zerofy(int amount) {
+	private String Zerofy(final int amount) {
 		String finale = "";
 		if (amount < 10) {
 			finale = "000" + amount;

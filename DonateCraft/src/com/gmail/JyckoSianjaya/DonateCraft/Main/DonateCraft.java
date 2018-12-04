@@ -34,7 +34,7 @@ import com.gmail.JyckoSianjaya.DonateCraft.Objects.RedeemCode;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.ActionBarAPI;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 
-public class DonateCraft extends JavaPlugin {
+public final class DonateCraft extends JavaPlugin {
 	private static DonateCraft instance;
 	private ActionStorage as;
 	private CashBank cb;
@@ -50,7 +50,7 @@ public class DonateCraft extends JavaPlugin {
 	private DCRunnable dcr;
 	private ActionBarAPI aba;
 	@Override
-	public void onEnable() {
+	public final void onEnable() {
 		Utility.sendConsole("&6&l<<--&e&l DonateCraft &6&l&m-->>&r");
 		Utility.sendConsole(" ");
 		Utility.sendConsole("&eProfessionally made with &dlove &eby Jycko Sianjaya a.k.a Gober xD");
@@ -78,51 +78,51 @@ public class DonateCraft extends JavaPlugin {
 		checkUpdates();
 	}
 	@Override
-	public void onDisable() {
+	public final void onDisable() {
 		saveAllCash();
 		saveAllcode();
 	}
-	private void registerMetrics() {
+	private final void registerMetrics() {
 		Metrics metrics = new Metrics(this);
 	}
-	private void checkNBTAPI() {
+	private final void checkNBTAPI() {
 		}
-	private void CreateStorageObjects() {
+	private final void CreateStorageObjects() {
 		logger = DCLogger.getInstance();
-		DataStorage ds = DataStorage.getInstance();
+		final DataStorage ds = DataStorage.getInstance();
 		ds.LoadConfig();
 		this.ds = ds;
-		LangStorage ls = LangStorage.getInstance();
+		final LangStorage ls = LangStorage.getInstance();
 		ls.LoadMessage();
 		this.ls = ls;
-		PlayerData pd = PlayerData.getInstance();
+		final PlayerData pd = PlayerData.getInstance();
 		this.pd = pd;
-		ActionStorage as = ActionStorage.getInstance();
+		final ActionStorage as = ActionStorage.getInstance();
 		as.LoadActions();
 		this.as = as;
-		ItemStorage is = ItemStorage.getInstance();
+		final ItemStorage is = ItemStorage.getInstance();
 		is.LoadFiles();
 		this.iss = is;
-		CashBank bank = CashBank.getInstance();
+		final CashBank bank = CashBank.getInstance();
 		bank.LoadFiles();
 		this.cb = bank;
-		InventoryStorage IS = InventoryStorage.getInstance();
+		final InventoryStorage IS = InventoryStorage.getInstance();
 		this.is = IS;
 		IS.LoadFiles();
-		RedeemStorage rs = RedeemStorage.getInstance();
+		final RedeemStorage rs = RedeemStorage.getInstance();
 		rs.LoadRedeemFile();
 		this.rs = rs;
-		ACCashBank acb = ACCashBank.getInstance();
+		final ACCashBank acb = ACCashBank.getInstance();
 		this.acb = acb;
 		this.dcr = DCRunnable.getInstance();
 		aba = ActionBarAPI.getInstance();
 	}
-	private void LoadManagers() {
+	private final void LoadManagers() {
 		cmm = ConfirmationManager.getInstance();
 	}
-	private void saveAllcode() {
-		RedeemStorage storage = RedeemStorage.getInstance();
-		File file = new File(this.getDataFolder(), "Redeems.yml");
+	private final void saveAllcode() {
+		final RedeemStorage storage = RedeemStorage.getInstance();
+		final File file = new File(this.getDataFolder(), "Redeems.yml");
 		file.delete();
 		try {
 			file.createNewFile();
@@ -130,12 +130,12 @@ public class DonateCraft extends JavaPlugin {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+		final YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
 		yaml.createSection("redeems");
-		ConfigurationSection redeems = yaml.getConfigurationSection("redeems");
-		for (RedeemCode code : storage.getRedeemCodes()) {
-			String cc = code.getCode();
-			int amount = code.getCash().getCashAmount();
+		final ConfigurationSection redeems = yaml.getConfigurationSection("redeems");
+		for (final RedeemCode code : storage.getRedeemCodes()) {
+			final String cc = code.getCode();
+			final int amount = code.getCash().getCashAmount();
 			redeems.set(cc, amount);
 		}
 		try {
@@ -146,14 +146,14 @@ public class DonateCraft extends JavaPlugin {
 			Utility.sendConsole("[DC] Can't save Redeems.yml");
 		}
 	}
-	private void saveAllCash() {
-		CashBank bank = CashBank.getInstance();
-		PlayerData pd = PlayerData.getInstance();
-		for (Player p : Bukkit.getOnlinePlayers()) {
+	private final void saveAllCash() {
+		final CashBank bank = CashBank.getInstance();
+		final PlayerData pd = PlayerData.getInstance();
+		for (final Player p : Bukkit.getOnlinePlayers()) {
 			if (bank.getCash(p) == null) {
 				continue;
 			}
-			Cash cash = bank.getCash(p);
+			final Cash cash = bank.getCash(p);
 			try {
 			pd.setData(p, cash);
 			} catch (IOException e) {
@@ -161,41 +161,41 @@ public class DonateCraft extends JavaPlugin {
 			}
 		}
 	}
-	private void RegisterCommands() {
-		CommandExecutor executor = new DonateCmdListener();
+	private final void RegisterCommands() {
+		final CommandExecutor executor = new DonateCmdListener();
 		this.getCommand("redeem").setExecutor(executor);
 		this.getCommand("store").setExecutor(executor);
 		this.getCommand("donatecraft").setExecutor(executor);
 		this.getCommand("cash").setExecutor(executor);
 		this.getCommand("acash").setExecutor(executor);
 	}
-	private void registerInstance() {
+	private final void registerInstance() {
 		instance = this;
 	}
-	public static DonateCraft getInstance() {
+	public final static DonateCraft getInstance() {
 		return instance;
 	}
-	private void RegisterEvents() {
+	private final void RegisterEvents() {
 		DCEventHandler.getInstance();
 		Bukkit.getServer().getPluginManager().registerEvents(new DCEvents(), this);
 	}
-	private void CreateFolders() {
-		File folder = new File(this.getDataFolder(), "playerdata");
+	private final void CreateFolders() {
+		final File folder = new File(this.getDataFolder(), "playerdata");
 		if (!folder.exists()) {
 			folder.mkdirs();
 		}
-		File logs = new File(this.getDataFolder(), "logs");
+		final File logs = new File(this.getDataFolder(), "logs");
 		if (!logs.exists()) {
 			logs.mkdir();
 		}
 	}
 	@Override
-	public void onLoad() {
+	public final void onLoad() {
 		showCoolLogo();
 	}
-	private void showCoolLogo() {
-		PluginDescriptionFile dcpf = this.getDescription();
-		String dc = dcpf.getVersion();
+	private final void showCoolLogo() {
+		final PluginDescriptionFile dcpf = this.getDescription();
+		final String dc = dcpf.getVersion();
 		Utility.sendConsole("&6   __    __        __  ___  __ &e   __  __   __   __  ___             ");
 		Utility.sendConsole("&6  |  \\  |  | |\\ | |__|  |  |__ &e  |   |__| |__| |__   |                   ");
 		Utility.sendConsole("&6  |__/  |__| | \\| |  |  |  |__ &e  |__ |  \\ |  | |     |               ");
@@ -204,16 +204,16 @@ public class DonateCraft extends JavaPlugin {
 
 
 	}
-	private void checkUpdates() {
+	private final void checkUpdates() {
 		URL url = null;
 		Scanner scanner = null;
 		try {
 			// Url for Plugin Version is: https://pastebin.com/hfq3rsZx
 		url = new URL("https://pastebin.com/raw/hfq3rsZx");
 		scanner = new Scanner(url.openStream());
-		String str = scanner.nextLine();
-		PluginDescriptionFile dcpf = this.getDescription();
-		String dc = dcpf.getVersion();
+		final String str = scanner.nextLine();
+		final PluginDescriptionFile dcpf = this.getDescription();
+		final String dc = dcpf.getVersion();
 		scanner.close();
 		if (!str.equals(dc)) {
 			
@@ -229,32 +229,32 @@ public class DonateCraft extends JavaPlugin {
 		}
 	}
 	private void CopyFiles() {
-		File langfile = new File(this.getDataFolder(), "lang.yml");
+		final File langfile = new File(this.getDataFolder(), "lang.yml");
 		if (!langfile.exists()) {
 			this.saveResource("lang.yml", true);
 		}
-		File itemfile = new File(this.getDataFolder(), "Items.yml");
+		final File itemfile = new File(this.getDataFolder(), "Items.yml");
 		if (!itemfile.exists()) {
 			this.saveResource("Items.yml", true);
 		}
-		File actionfile = new File(this.getDataFolder(), "Actions.yml");
+		final File actionfile = new File(this.getDataFolder(), "Actions.yml");
 		if (!actionfile.exists()) {
 			this.saveResource("Actions.yml", true);
 		}
-		File GUIFile = new File(this.getDataFolder(), "GUI.yml");
+		final File GUIFile = new File(this.getDataFolder(), "GUI.yml");
 		if (!GUIFile.exists()) {
 			this.saveResource("GUI.yml", true);
 		}
-		File RedeemFile = new File(this.getDataFolder(), "Redeems.yml");
+		final File RedeemFile = new File(this.getDataFolder(), "Redeems.yml");
 		if (!RedeemFile.exists()) {
 			this.saveResource("Redeems.yml", true);
 		}
-		File instructions = new File(this.getDataFolder(), "Instructions.txt");
+		final File instructions = new File(this.getDataFolder(), "Instructions.txt");
 		this.saveResource("Instructions.txt", true);
 		this.saveResource("Changelogs.txt", true);
 	}
 	private void LoadConfig() {
-		FileConfiguration config = this.getConfig();
+		final FileConfiguration config = this.getConfig();
 		config.options().copyDefaults(true);
 		saveConfig();
 	}

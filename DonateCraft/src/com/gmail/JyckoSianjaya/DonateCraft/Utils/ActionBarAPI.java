@@ -6,11 +6,11 @@ import java.lang.reflect.Method;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class ActionBarAPI {
+public final class ActionBarAPI {
     private static String nmsver;
     private static boolean useOldMethods = false;
     private static ActionBarAPI instance;
-    public static ActionBarAPI getInstance() {
+    public final static ActionBarAPI getInstance() {
     	if (instance == null) instance = new ActionBarAPI();
     	return instance;
     }
@@ -25,60 +25,60 @@ public class ActionBarAPI {
 
     }
 
-    public static void sendActionBar(Player player, String message) {
+    public final static void sendActionBar(final Player player, final String message) {
         if (!player.isOnline()) {
             return; // Player may have logged out
         }
 
         // Call the event, if cancelled don't send Action Bar
         try {
-            Class<?> craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + nmsver + ".entity.CraftPlayer");
-            Object craftPlayer = craftPlayerClass.cast(player);
+        	final Class<?> craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + nmsver + ".entity.CraftPlayer");
+        	final Object craftPlayer = craftPlayerClass.cast(player);
             Object packet;
-            Class<?> packetPlayOutChatClass = Class.forName("net.minecraft.server." + nmsver + ".PacketPlayOutChat");
-            Class<?> packetClass = Class.forName("net.minecraft.server." + nmsver + ".Packet");
+            final Class<?> packetPlayOutChatClass = Class.forName("net.minecraft.server." + nmsver + ".PacketPlayOutChat");
+            final Class<?> packetClass = Class.forName("net.minecraft.server." + nmsver + ".Packet");
             if (useOldMethods) {
-                Class<?> chatSerializerClass = Class.forName("net.minecraft.server." + nmsver + ".ChatSerializer");
-                Class<?> iChatBaseComponentClass = Class.forName("net.minecraft.server." + nmsver + ".IChatBaseComponent");
-                Method m3 = chatSerializerClass.getDeclaredMethod("a", String.class);
-                Object cbc = iChatBaseComponentClass.cast(m3.invoke(chatSerializerClass, "{\"text\": \"" + message + "\"}"));
+            	final Class<?> chatSerializerClass = Class.forName("net.minecraft.server." + nmsver + ".ChatSerializer");
+            	final Class<?> iChatBaseComponentClass = Class.forName("net.minecraft.server." + nmsver + ".IChatBaseComponent");
+            	final Method m3 = chatSerializerClass.getDeclaredMethod("a", String.class);
+            	final Object cbc = iChatBaseComponentClass.cast(m3.invoke(chatSerializerClass, "{\"text\": \"" + message + "\"}"));
                 packet = packetPlayOutChatClass.getConstructor(new Class<?>[]{iChatBaseComponentClass, byte.class}).newInstance(cbc, (byte) 2);
             } else {
-                Class<?> chatComponentTextClass = Class.forName("net.minecraft.server." + nmsver + ".ChatComponentText");
-                Class<?> iChatBaseComponentClass = Class.forName("net.minecraft.server." + nmsver + ".IChatBaseComponent");
+            	final Class<?> chatComponentTextClass = Class.forName("net.minecraft.server." + nmsver + ".ChatComponentText");
+                final Class<?> iChatBaseComponentClass = Class.forName("net.minecraft.server." + nmsver + ".IChatBaseComponent");
                 try {
-                    Class<?> chatMessageTypeClass = Class.forName("net.minecraft.server." + nmsver + ".ChatMessageType");
-                    Object[] chatMessageTypes = chatMessageTypeClass.getEnumConstants();
+                	final Class<?> chatMessageTypeClass = Class.forName("net.minecraft.server." + nmsver + ".ChatMessageType");
+                	final  Object[] chatMessageTypes = chatMessageTypeClass.getEnumConstants();
                     Object chatMessageType = null;
-                    for (Object obj : chatMessageTypes) {
+                    for (final Object obj : chatMessageTypes) {
                         if (obj.toString().equals("GAME_INFO")) {
                             chatMessageType = obj;
                         }
                     }
-                    Object chatCompontentText = chatComponentTextClass.getConstructor(new Class<?>[]{String.class}).newInstance(message);
+                    final Object chatCompontentText = chatComponentTextClass.getConstructor(new Class<?>[]{String.class}).newInstance(message);
                     packet = packetPlayOutChatClass.getConstructor(new Class<?>[]{iChatBaseComponentClass, chatMessageTypeClass}).newInstance(chatCompontentText, chatMessageType);
-                } catch (ClassNotFoundException cnfe) {
-                    Object chatCompontentText = chatComponentTextClass.getConstructor(new Class<?>[]{String.class}).newInstance(message);
+                } catch (final ClassNotFoundException cnfe) {
+                	final Object chatCompontentText = chatComponentTextClass.getConstructor(new Class<?>[]{String.class}).newInstance(message);
                     packet = packetPlayOutChatClass.getConstructor(new Class<?>[]{iChatBaseComponentClass, byte.class}).newInstance(chatCompontentText, (byte) 2);
                 }
             }
-            Method craftPlayerHandleMethod = craftPlayerClass.getDeclaredMethod("getHandle");
-            Object craftPlayerHandle = craftPlayerHandleMethod.invoke(craftPlayer);
-            Field playerConnectionField = craftPlayerHandle.getClass().getDeclaredField("playerConnection");
-            Object playerConnection = playerConnectionField.get(craftPlayerHandle);
-            Method sendPacketMethod = playerConnection.getClass().getDeclaredMethod("sendPacket", packetClass);
+            final Method craftPlayerHandleMethod = craftPlayerClass.getDeclaredMethod("getHandle");
+            final Object craftPlayerHandle = craftPlayerHandleMethod.invoke(craftPlayer);
+            final Field playerConnectionField = craftPlayerHandle.getClass().getDeclaredField("playerConnection");
+            final Object playerConnection = playerConnectionField.get(craftPlayerHandle);
+            final Method sendPacketMethod = playerConnection.getClass().getDeclaredMethod("sendPacket", packetClass);
             sendPacketMethod.invoke(playerConnection, packet);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void sendActionBarToAllPlayers(String message) {
+    public final static void sendActionBarToAllPlayers(final String message) {
         sendActionBarToAllPlayers(message, -1);
     }
 
-    public static void sendActionBarToAllPlayers(String message, int duration) {
-        for (Player p : Bukkit.getOnlinePlayers()) {
+    public final static void sendActionBarToAllPlayers(final String message, final int duration) {
+        for (final Player p : Bukkit.getOnlinePlayers()) {
             sendActionBar(p, message);
         }
     }

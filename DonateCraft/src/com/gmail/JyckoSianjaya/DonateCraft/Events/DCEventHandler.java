@@ -33,30 +33,30 @@ import com.gmail.JyckoSianjaya.DonateCraft.Utils.XSound;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.NBT.NBTItem;
 
 
-public class DCEventHandler {
+public final class DCEventHandler {
 	private static DCEventHandler instance;
-	private ActionStorage actions = ActionStorage.getInstance();
-	private CashBank bank = CashBank.getInstance();
-	private PlayerData pd = PlayerData.getInstance();
-	private LangStorage ls = LangStorage.getInstance();
-	private DataStorage ds = DataStorage.getInstance();
-	private ItemStorage is = ItemStorage.getInstance();
-	private DCLogger loger = DCLogger.getInstance();
-	private ConfirmationManager confirm = ConfirmationManager.getInstance();
+	private final ActionStorage actions = ActionStorage.getInstance();
+	private final CashBank bank = CashBank.getInstance();
+	private final PlayerData pd = PlayerData.getInstance();
+	private final LangStorage ls = LangStorage.getInstance();
+	private final DataStorage ds = DataStorage.getInstance();
+	private final ItemStorage is = ItemStorage.getInstance();
+	private final DCLogger loger = DCLogger.getInstance();
+	private final ConfirmationManager confirm = ConfirmationManager.getInstance();
 	private DCEventHandler() {
 	}
-	public static DCEventHandler getInstance() {
+	public final static DCEventHandler getInstance() {
 		if (instance == null) {
 			instance = new DCEventHandler();
 		}
 		return instance;
 	}
-	public void ManageConfirmationClick(InventoryClickEvent e) {
+	public final void ManageConfirmationClick(final InventoryClickEvent e) {
 		if (e.getSlotType() == SlotType.OUTSIDE) {
 			return;
 		}
 		e.setCancelled(true);
-		 ItemStack item = e.getCurrentItem();
+		final ItemStack item = e.getCurrentItem();
 		 if (item == null) {
 			 return;
 		 }
@@ -66,7 +66,7 @@ public class DCEventHandler {
 		 if (item.getItemMeta().getDisplayName() == null) {
 			 return;
 		 }
-		 Player p = (Player) e.getWhoClicked();
+		 final  Player p = (Player) e.getWhoClicked();
 		 Cash cash = null;
 		 if (!bank.hasCash(p)) {
 			 bank.setCash(p, new Cash(0));
@@ -75,28 +75,28 @@ public class DCEventHandler {
 			 cash = new Cash(0);
 		 }
 		 cash = bank.getCash(p);
-			ConfirmationHolder ch = (ConfirmationHolder) e.getInventory().getHolder();
-		 NBTItem rritem = new NBTItem(item);
+		 final ConfirmationHolder ch = (ConfirmationHolder) e.getInventory().getHolder();
+		 final NBTItem rritem = new NBTItem(item);
 		 if (!rritem.hasKey("custom_actiontype")) {
 			 return;
 		 }
-		 String cckey = rritem.getString("custom_actiontype");
+		 final String cckey = rritem.getString("custom_actiontype");
 		 switch (cckey.toLowerCase()) {
 		 case "yes":
-			 ItemStack target = ch.getTarget();
-			 NBTItem titem = new NBTItem(target);
-			 String akey = titem.getString("DCAction");
-			 NBTItem citem = new NBTItem(item);
-			 String ckey = citem.getString("CCAction");
+			 final  ItemStack target = ch.getTarget();
+			 final  NBTItem titem = new NBTItem(target);
+			 final  String akey = titem.getString("DCAction");
+			 final  NBTItem citem = new NBTItem(item);
+			 final  String ckey = citem.getString("CCAction");
 			 if (akey == null) {
 				 return;
 			 }
 			 int cost = 0;
 			 cost = titem.getInteger("DCCost");
 			 cost = (int) (cost - cost * ds.getDiscount());
-			 int amount = cash.getCashAmount();
+			 final  int amount = cash.getCashAmount();
 			 if (amount < cost) {
-				 int less = cost - amount;
+				 final  int less = cost - amount;
 				 for (String str : ls.getMessage(LongMessage.NO_CASH)) {
 					 if (str.contains("%MORE%")) {
 						 str = str.replaceAll("%MORE%", "" + less); 
@@ -114,23 +114,23 @@ public class DCEventHandler {
 			 }
 			 p.closeInventory();
 			 if (actions.getAction(ckey) != null) {
-			 Action caction = actions.getAction(ckey);
+			 final  Action caction = actions.getAction(ckey);
 			 caction.applyCommand(p);
 			 }
-			 Action action = actions.getAction(akey);
+			 final Action action = actions.getAction(akey);
 			 action.applyCommand(p);
 			 e.setCancelled(true); 
 			 return;
 		 case "no":
-			 String dkey = rritem.getString("CCAction");
-			 Action taction = actions.getAction(dkey);
-			 Inventory oginv = ch.getOriginalInventory();
+			 final String dkey = rritem.getString("CCAction");
+			 final Action taction = actions.getAction(dkey);
+			 final Inventory oginv = ch.getOriginalInventory();
 			 p.openInventory(oginv);
 			 taction.applyCommand(p);
 			 return;
 		 case "var":
-			 String rcaction =  rritem.getString("CCAction");
-			 Action ddaction = actions.getAction(rcaction);
+			 final  String rcaction =  rritem.getString("CCAction");
+			 final Action ddaction = actions.getAction(rcaction);
 			 ddaction.applyCommand(p);
 			 return;
 			 default:
@@ -138,8 +138,8 @@ public class DCEventHandler {
 		 }
 		
 	}
-	public void ManageInventoryClickEvent(InventoryClickEvent e) {
-		InventoryHolder ihold = e.getInventory().getHolder();
+	public void ManageInventoryClickEvent(final InventoryClickEvent e) {
+		final InventoryHolder ihold = e.getInventory().getHolder();
 		if (!(ihold instanceof DCHolder)) {
 			return;
 		}
@@ -147,7 +147,7 @@ public class DCEventHandler {
 			return;
 		}
 		 e.setCancelled(true);
-		 ItemStack item = e.getCurrentItem();
+		 final ItemStack item = e.getCurrentItem();
 		 if (item == null) {
 			 return;
 		 }
@@ -157,7 +157,7 @@ public class DCEventHandler {
 		 if (item.getItemMeta().getDisplayName() == null) {
 			 return;
 		 }
-		 Player p = (Player) e.getWhoClicked();
+		 final  Player p = (Player) e.getWhoClicked();
 		 Cash cash = null;
 		 if (!bank.hasCash(p)) {
 			 bank.setCash(p, new Cash(0));
@@ -165,20 +165,20 @@ public class DCEventHandler {
 		 if (cash == null) {
 			 cash = new Cash(0);
 		 }
-		 NBTItem rritem = new NBTItem(item);
+		 final  NBTItem rritem = new NBTItem(item);
 		 if (!rritem.hasKey("DCAction")) {
 			 return;
 		 }
-		 String akey = rritem.getString("DCAction");
+		 final  String akey = rritem.getString("DCAction");
 		 if (akey == null) {
 			 return;
 		 }
-		 String rperm = rritem.getString("DCPerm");
+		 final String rperm = rritem.getString("DCPerm");
 		 if (!rperm.toUpperCase().equals("NONE")) {
 		 if (!p.hasPermission(rperm)) {
 			 Utility.PlaySound(p, XSound.VILLAGER_NO.bukkitSound(), 0.4F, 0.75F);
-			 int clicked = e.getSlot();
-			 Inventory inv = e.getClickedInventory();
+			 final int clicked = e.getSlot();
+			 final  Inventory inv = e.getClickedInventory();
 			 inv.setItem(clicked, ItemStorage.getInstance().getDenyItem());
 			 DCRunnable.getInstance().addTask(new DCTask() {
 				 int liveticks = 40;
@@ -205,30 +205,30 @@ public class DCEventHandler {
 			 return;
 		 }
 		 }
-		 String bperm = rritem.getString("BLISTPERM");
+		 final String bperm = rritem.getString("BLISTPERM");
 		 if (!bperm.toUpperCase().equals("NONE")) {
 		 if (!p.hasPermission("donatecraft.staff") && p.hasPermission(bperm)) {
 			 Utility.PlaySound(p, XSound.VILLAGER_NO.bukkitSound(), 0.4F, 0.65F);
-			 int clicked = e.getSlot();
-			 Inventory inv = e.getClickedInventory();
+			 final int clicked = e.getSlot();
+			 final Inventory inv = e.getClickedInventory();
 			 inv.setItem(clicked, ItemStorage.getInstance().getDenyItem2());
 			 DCRunnable.getInstance().addTask(new DCTask() {
 				 int liveticks = 40;
 				@Override
-				public void runTask() {
+				public final void runTask() {
 					// TODO Auto-generated method stub
 					if (liveticks > 1) return;
 					inv.setItem(clicked, item);
 				}
 
 				@Override
-				public void reduceTicks() {
+				public final void reduceTicks() {
 					// TODO Auto-generated method stub
 					liveticks--;
 				}
 
 				@Override
-				public int getLiveTicks() {
+				public final int getLiveTicks() {
 					// TODO Auto-generated method stub
 					return liveticks;
 				}
@@ -239,13 +239,13 @@ public class DCEventHandler {
 		 cash = bank.getCash(p);
 		 int cost = 0;
 		 cost = rritem.getInteger("DCCost");
-		 int ocost = cost;
+		 final int ocost = cost;
 		 cost = (int) (cost - cost * ds.getDiscount());
-		 int amount = cash.getCashAmount();
+		 final int amount = cash.getCashAmount();
 		 if (amount < cost) {
 			 Utility.PlaySound(p, XSound.VILLAGER_NO.bukkitSound(), 0.4F, 0.85F);
-			 int clicked = e.getSlot();
-			 Inventory inv = e.getClickedInventory();
+			 final int clicked = e.getSlot();
+			 final  Inventory inv = e.getClickedInventory();
 			 inv.setItem(clicked, ItemStorage.getInstance().getDenyItem3());
 			 DCRunnable.getInstance().addTask(new DCTask() {
 				 int liveticks = 40;
@@ -268,7 +268,7 @@ public class DCEventHandler {
 					return liveticks;
 				}
 			 });
-			 int less = cost - amount;
+			 final  int less = cost - amount;
 			 for (String str : ls.getMessage(LongMessage.NO_CASH)) {
 				 if (str.contains("%MORE%")) {
 					 str = str.replaceAll("%MORE%", "" + less); 
@@ -285,26 +285,26 @@ public class DCEventHandler {
 			 return;
 		 }
 		 else {
-		 Action action = actions.getAction(akey);
+			 final  Action action = actions.getAction(akey);
 		 if (action != null) {
 		 action.applyCommand(p);
 		 }
 		 e.setCancelled(true);
 		 }
 	}
-	public void ManagePlayerJoin(PlayerJoinEvent e) {
-		Player p = e.getPlayer();
-		Cash cash = pd.getCash(p);
+	public final void ManagePlayerJoin(final PlayerJoinEvent e) {
+		final Player p = e.getPlayer();
+		final Cash cash = pd.getCash(p);
 	}
-	public void ManagePlayerQuit(PlayerQuitEvent e) {
-		Player p = e.getPlayer();
-		Cash cash = bank.getCash(p);
+	public final void ManagePlayerQuit(final PlayerQuitEvent e) {
+		final Player p = e.getPlayer();
+		final Cash cash = bank.getCash(p);
 		if (cash == null) {
 			return;
 		}
 		try {
 			pd.setData(p, cash);
-		} catch (IOException e1) {
+		} catch (final IOException e1) {
 			// TODO Auto-generated catch block
 			Utility.sendConsole("[DC] Can't save data for Player &e" + p.getName() + "&r!");
 		}

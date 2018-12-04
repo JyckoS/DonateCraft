@@ -20,43 +20,43 @@ import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.XMaterial;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.XSound;
 
-public class ActionStorage {
+public final class ActionStorage {
 	private static ActionStorage instance;
-	private HashMap<String, Action> actions = new HashMap<String, Action>();
-	private HashMap<ItemStack, Action> dcactions = new HashMap<ItemStack, Action>();
+	private final HashMap<String, Action> actions = new HashMap<String, Action>();
+	private final HashMap<ItemStack, Action> dcactions = new HashMap<ItemStack, Action>();
 	private ActionStorage() {
 		LoadActions();
 	}
-	public static ActionStorage getInstance() {
+	public static final ActionStorage getInstance() {
 		if (instance == null) {
 			instance = new ActionStorage();
 		}
 		return instance;
 	}
-	public void LoadActions() {
-		File file = new File(DonateCraft.getInstance().getDataFolder(), "Actions.yml");
-		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-		ConfigurationSection actionsection = yaml.getConfigurationSection("Actions");
-		Set<String> actions = actionsection.getKeys(false);
-		for (String str : actions) {
+	public final void LoadActions() {
+		final File file = new File(DonateCraft.getInstance().getDataFolder(), "Actions.yml");
+		final YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+		final ConfigurationSection actionsection = yaml.getConfigurationSection("Actions");
+		final Set<String> actions = actionsection.getKeys(false);
+		for (final String str : actions) {
 			ArrayList<String> action = new ArrayList<String>(actionsection.getStringList(str));
-			for (String act : action) {
+			for (final String act : action) {
 			if (act.contains("%SNDS")) {
-				String[] sta = act.replaceAll("%SNDS", "").split("-");
-				String rsound = sta[0];
+				final String[] sta = act.replaceAll("%SNDS", "").split("-");
+				final String rsound = sta[0];
 				try {
-				XSound snd = XSound.requestXSound(rsound);
-				Sound snde = snd.bukkitSound();
+				final XSound snd = XSound.requestXSound(rsound);
+				final Sound snde = snd.bukkitSound();
 				} catch (IllegalArgumentException e) {
 					Utility.sendConsole("&6DC >  &c[WARNING] There's no Available sound for sound name: " + rsound + ", in the Action: " + str);
 				}
 			}
 			if (act.contains("%ITEM")) {
-				String[] items = act.replaceAll("%ITEM", "").split("-");
-				String material = items[0];
+				final String[] items = act.replaceAll("%ITEM", "").split("-");
+				final String material = items[0];
 				try {
-				XMaterial mat = XMaterial.fromString(material);
-				Material bmat = mat.parseMaterial();
+				final XMaterial mat = XMaterial.fromString(material);
+				final Material bmat = mat.parseMaterial();
 				} catch (IllegalArgumentException a) {
 					Utility.sendConsole("&6DC > &c[WARNING] There's no available Material for Material: " + material + ", from Action: " + str);
 				}
@@ -65,22 +65,22 @@ public class ActionStorage {
 		}
 		}
 	}
-	public void setAction(ItemStack item, Action act) {
+	public final void setAction(final ItemStack item, final Action act) {
 		this.dcactions.put(item, act);
 	}
-	public Action getAction(ItemStack item) {
+	public final Action getAction(final ItemStack item) {
 		return dcactions.get(item);
 	}
-	public void setAction(String key, Action act) {
+	public final void setAction(final String key, final Action act) {
 		actions.put(key, act);
 	}
-	public Action getAction(String key) {
+	public final Action getAction(final String key) {
 		return actions.get(key);
 	}
-	public Collection<Action> getActions() {
+	public final Collection<Action> getActions() {
 		return actions.values();
 	}
-	public Collection<String> getKeys() {
+	public final  Collection<String> getKeys() {
 		return actions.keySet();
 	}
 }

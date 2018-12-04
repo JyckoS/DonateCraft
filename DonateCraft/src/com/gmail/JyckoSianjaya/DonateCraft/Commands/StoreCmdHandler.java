@@ -10,25 +10,25 @@ import com.gmail.JyckoSianjaya.DonateCraft.Data.InventoryStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.XSound;
 
-public class StoreCmdHandler {
+public final class StoreCmdHandler {
 	private static StoreCmdHandler instance;
-	private InventoryStorage storage = InventoryStorage.getInstance();
+	private final InventoryStorage storage = InventoryStorage.getInstance();
 	private StoreCmdHandler() {
 	}
-	public static StoreCmdHandler getInstance() {
+	public final static StoreCmdHandler getInstance() {
 		if (instance == null) {
 			instance = new StoreCmdHandler();
 		}
 		return instance;
 	}
-	public void HandleCommand(CommandSender sender, Command cmd, String[] args) {
+	public final void HandleCommand(final CommandSender sender, final Command cmd, final String[] args) {
 		// TODO Auto-generated method stub
 		if (!(sender instanceof Player)) {
 			Utility.sendMsg(sender, "&cOnly players can do that!");
 			return;
 		}
-		Player p = (Player) sender;
-		Inventory inv = storage.getInventory("Main");
+		final Player p = (Player) sender;
+		final Inventory inv = storage.getInventory("Main");
 		Utility.PlaySound(p, XSound.HORSE_BREATHE.bukkitSound(), 0.4F, 2.0F);
 		Utility.PlaySound(p, XSound.NOTE_PLING.bukkitSound(), 0.7F, 2.0F);
 

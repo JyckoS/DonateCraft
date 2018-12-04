@@ -17,26 +17,26 @@ import com.gmail.JyckoSianjaya.DonateCraft.Objects.ACWallet;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.Cash;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 
-public class CashCmdHandler {
+public final class CashCmdHandler {
 	private static CashCmdHandler instance;
-	private LangStorage lang = LangStorage.getInstance();
-	private CashBank cashb = CashBank.getInstance();
+	private final LangStorage lang = LangStorage.getInstance();
+	private final CashBank cashb = CashBank.getInstance();
 	private CashCmdHandler() {
 	}
-	public static CashCmdHandler getInstance() {
+	public static final CashCmdHandler getInstance() {
 		if (instance == null) {
 			instance = new CashCmdHandler();
 		}
 		return instance;
 	}
-	public void ManageCashCommand(CommandSender sender, Command cmd, String[] args) {
-		int length = args.length;
+	public final void ManageCashCommand(CommandSender sender, Command cmd, String[] args) {
+		final int length = args.length;
 		if (length < 1) {
 			if (!(sender instanceof Player)) {
 				Utility.sendMsg(sender, "&cOnly players!");
 				return;
 			}
-			Player p = (Player) sender;
+			final Player p = (Player) sender;
 			for (String str : lang.getMessage(LongMessage.SHOW_CASH)) {
 				if (str.contains("%p")) {
 					str = str.replaceAll("%p", p.getName());
@@ -69,7 +69,7 @@ public class CashCmdHandler {
 				return;
 			}
 			if (length < 2) {
-				ArrayList<String> arrays = cashb.getTopBalance();
+				final ArrayList<String> arrays = cashb.getTopBalance();
 				for (String str : lang.getMessage(LongMessage.CTOP_OPENING)) {
 					if (str.contains("%r")) {
 						str = str.replaceAll("%r", "1");
@@ -79,7 +79,7 @@ public class CashCmdHandler {
 					}
 					Utility.sendMsg(sender, str);
 				}
-				int aalength = arrays.size();
+				final int aalength = arrays.size();
 				if (aalength < 10) {
 					for (int i = 0; i < aalength; i++) {
 						try {
@@ -87,9 +87,9 @@ public class CashCmdHandler {
 						} catch (IndexOutOfBoundsException e) {
 							break;
 						}
-						String thebal = arrays.get(i);
-						String[] info = thebal.split("~");
-						String msg = lang.getMessage(Message.CTOP_FORMAT).replaceAll("%RANK%", "" + (i + 1)).replaceAll("%p", info[0]).replaceAll("%cash%", info[1]);
+						final String thebal = arrays.get(i);
+						final String[] info = thebal.split("~");
+						final String msg = lang.getMessage(Message.CTOP_FORMAT).replaceAll("%RANK%", "" + (i + 1)).replaceAll("%p", info[0]).replaceAll("%cash%", info[1]);
 						Utility.sendMsg(sender, msg);
 					}
 				}
@@ -100,9 +100,9 @@ public class CashCmdHandler {
 						} catch (IndexOutOfBoundsException e) {
 							break;
 						}
-					String thebal = arrays.get(i);
-					String[] info = thebal.split("~");
-					String msg = lang.getMessage(Message.CTOP_FORMAT).replaceAll("%RANK%", "" + (i + 1)).replaceAll("%p", info[0]).replaceAll("%cash%", info[1]);
+					final String thebal = arrays.get(i);
+					final String[] info = thebal.split("~");
+					final String msg = lang.getMessage(Message.CTOP_FORMAT).replaceAll("%RANK%", "" + (i + 1)).replaceAll("%p", info[0]).replaceAll("%cash%", info[1]);
 					Utility.sendMsg(sender, msg);
 					}
 				}
@@ -125,7 +125,7 @@ public class CashCmdHandler {
 					for (String str : lang.getMessage(LongMessage.NOT_NUMBER)) Utility.sendMsg(sender, str);
 					return;
 				}
-				ArrayList<String> cashs = cashb.getTopBalance();
+				final ArrayList<String> cashs = cashb.getTopBalance();
 				if (max > cashs.size()) max = cashs.size();
 				if (max < 10) max = 10;
 				for (String str : lang.getMessage(LongMessage.CTOP_OPENING)) {
@@ -144,9 +144,9 @@ public class CashCmdHandler {
 					} catch (IndexOutOfBoundsException e) {
 						break;
 					}
-					String thebal = cashs.get(i);
-					String[] info = thebal.split("~");
-					String msg = lang.getMessage(Message.CTOP_FORMAT).replaceAll("%RANK%", "" + (i + 1)).replaceAll("%p", info[0]).replaceAll("%cash%", info[1]);
+					final String thebal = cashs.get(i);
+					final String[] info = thebal.split("~");
+					final String msg = lang.getMessage(Message.CTOP_FORMAT).replaceAll("%RANK%", "" + (i + 1)).replaceAll("%p", info[0]).replaceAll("%cash%", info[1]);
 					Utility.sendMsg(sender, msg);
 				}
 				for (String str : lang.getMessage(LongMessage.CTOP_CLOSING)) {
@@ -169,7 +169,7 @@ public class CashCmdHandler {
 				Utility.sendMsg(sender, "&a&l| &7/cash set <Player> <Amount>");
 				return;
 			}
-			Player p = Bukkit.getPlayer(args[1]);
+			final Player p = Bukkit.getPlayer(args[1]);
 			if (p == null) {
 				Utility.sendMsg(sender, "&c&l| &7That person doesn't exist!");
 				return;
@@ -181,8 +181,8 @@ public class CashCmdHandler {
 				Utility.sendMsg(sender, "&c&l| &7That's not a number!");
 				return;
 			}
-			UUID uuid = p.getUniqueId();
-			Cash cash = cashb.getCash(uuid);
+			final UUID uuid = p.getUniqueId();
+			final Cash cash = cashb.getCash(uuid);
 			if (cash == null) {
 			cashb.setCash(p.getUniqueId(), new Cash(cashamount));
 			Utility.sendMsg(sender, "&2&l| &7Successfuly changed the Cash amount for &f" + p.getName() + "&7 into &f" + cashamount);
@@ -200,7 +200,7 @@ public class CashCmdHandler {
 				Utility.sendMsg(sender, "&a&l| &7/cash add <Player> <Amount>");
 				return;
 			}
-			Player ap = Bukkit.getPlayer(args[1]);
+			final Player ap = Bukkit.getPlayer(args[1]);
 			if (ap == null) {
 				Utility.sendMsg(sender, "&c&l| &7That person doesn't exist!");
 				return;
@@ -212,21 +212,21 @@ public class CashCmdHandler {
 				Utility.sendMsg(sender, "&c&l| &7That's not a number!");
 				return;
 			}
-			ACCashBank acb = ACCashBank.getInstance();
+			final ACCashBank acb = ACCashBank.getInstance();
 			ACWallet wallet = acb.getACWallet(ap.getUniqueId());
 			if (wallet == null) {
 				acb.setACWallet(ap.getUniqueId(), new ACWallet(0));
 				wallet = acb.getACWallet(ap);
 			}
 			wallet.addAmount(addcashamount);
-			UUID auuid = ap.getUniqueId();
-			Cash acash = cashb.getCash(auuid);
+			final UUID auuid = ap.getUniqueId();
+			final Cash acash = cashb.getCash(auuid);
 			if (acash == null) {
 			cashb.setCash(auuid, new Cash(addcashamount));
 			Utility.sendMsg(sender, "&2&l| &7Successfuly &aincreased&7 the Cash amount for &f" + ap.getName() + "&7 into &f" + addcashamount);
 			return;
 			}
-			int currcash = acash.getCashAmount();
+			final int currcash = acash.getCashAmount();
 			acash.setCash(addcashamount+currcash);
 			Utility.sendMsg(sender, "&a&l| &7Successfuly &aincreased&7 the Cash amount for &f" + ap.getName() + "&7 into &f" + (addcashamount+currcash));
 			return;
@@ -240,7 +240,7 @@ public class CashCmdHandler {
 				Utility.sendMsg(sender, "&a&l| &7/cash take <Player> <Amount>");
 				return;
 			}
-			Player rp = Bukkit.getPlayer(args[1]);
+			final Player rp = Bukkit.getPlayer(args[1]);
 			if (rp == null) {
 				Utility.sendMsg(sender, "&c&l| &7That person doesn't exist!");
 				return;
@@ -252,14 +252,14 @@ public class CashCmdHandler {
 				Utility.sendMsg(sender, "&c&l| &7That's not a number!");
 				return;
 			}
-			UUID ruuid = rp.getUniqueId();
-			Cash rcash = cashb.getCash(ruuid);
+			final UUID ruuid = rp.getUniqueId();
+			final Cash rcash = cashb.getCash(ruuid);
 			if (rcash == null) {
 			cashb.setCash(ruuid, new Cash(0));
 			Utility.sendMsg(sender, "&2&l| &7Successfuly &cdecreased&7 the Cash amount for &f" + rp.getName() + "&7 into &f" + 0);
 			return;
 			}
-			int currdcash = rcash.getCashAmount();
+			final int currdcash = rcash.getCashAmount();
 			int fina = currdcash - rcashamount;
 			if (fina < 0) {
 				fina = 0;
@@ -268,7 +268,7 @@ public class CashCmdHandler {
 			Utility.sendMsg(sender, "&a&l| &7Successfuly &cdecreased&7 the Cash amount for &f" + rp.getName() + "&7 into &f" + fina);
 			return;
 		default:
-			Player play = Bukkit.getPlayer(args[0]);
+			final Player play = Bukkit.getPlayer(args[0]);
 			if (play == null) {
 				Utility.sendMsg(sender, "&c&l| &7That person doesn't exist!");
 				return;

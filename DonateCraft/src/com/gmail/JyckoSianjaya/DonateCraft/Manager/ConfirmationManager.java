@@ -13,13 +13,13 @@ import com.gmail.JyckoSianjaya.DonateCraft.Data.DataStorage.Do;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.InventoryStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 
-public class ConfirmationManager {
+public final class ConfirmationManager {
 	private static ConfirmationManager mng;
-	private InventoryStorage invs = InventoryStorage.getInstance();
-	private DataStorage data = DataStorage.getInstance();
+	private final InventoryStorage invs = InventoryStorage.getInstance();
+	private final DataStorage data = DataStorage.getInstance();
 	private ConfirmationManager() {
 	}
-	public static ConfirmationManager getInstance() {
+	public final static ConfirmationManager getInstance() {
 		if (mng == null) {
 			mng = new ConfirmationManager();
 		}
@@ -30,25 +30,25 @@ public class ConfirmationManager {
 		NO,
 		VARIABLE;
 	}
-	public void CreateConfirmation(final Inventory originalinv, final Player target, final int cost, ItemStack item, final int ocost) {
-		Inventory newconf = invs.getConfirmationInventory(originalinv, cost, ocost, item);
-		int varslot = data.getConfirmationSlot(ConfirmationSlot.VARIABLE);
+	public final void CreateConfirmation(final Inventory originalinv, final Player target, final int cost, ItemStack item, final int ocost) {
+		final Inventory newconf = invs.getConfirmationInventory(originalinv, cost, ocost, item);
+		final int varslot = data.getConfirmationSlot(ConfirmationSlot.VARIABLE);
 		
 		// VarItem = Original Raw Item (to modify)
 		// Item = Item Source (Bought item)
-		ItemStack varitem = newconf.getItem(varslot);
+		final ItemStack varitem = newconf.getItem(varslot);
 		if (data.getDoes(Do.var_original_material)) {
 			varitem.setType(item.getType());
 		}
-		ItemMeta varitemmeta = varitem.getItemMeta();
-		ItemMeta itemmeta = item.getItemMeta();
-		String itemoriginalname = itemmeta.getDisplayName();
+		final ItemMeta varitemmeta = varitem.getItemMeta();
+		final ItemMeta itemmeta = item.getItemMeta();
+		final String itemoriginalname = itemmeta.getDisplayName();
 		if (data.getDoes(Do.var_original_lore)) {
 			varitemmeta.setLore(itemmeta.getLore());
 		}
 		else {
-			List<String> varlore = varitemmeta.getLore();
-			ArrayList<String> newlore = new ArrayList<String>();
+			final List<String> varlore = varitemmeta.getLore();
+			final ArrayList<String> newlore = new ArrayList<String>();
 			for (String str : varlore) {
 				if (str.contains("%s")) str = str.replaceAll("%s", "" + cost);
 				if (str.contains("%o")) str = str.replaceAll("%o", "" + ocost);

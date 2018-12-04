@@ -28,10 +28,8 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
 public final class Utility {
-	int time;
-	int ctime;
 	private Utility() {}
-	public static Class<?> getClass(String classname) {
+	public final static Class<?> getClass(String classname) {
 		String servversion = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
 		try {
 			return Class.forName("net.minecraft.server." + servversion + "." + classname);
@@ -40,7 +38,7 @@ public final class Utility {
 		} 
 		return null;
 	  }
-	private static List<Class> findClasses(File directory, String packageName) throws ClassNotFoundException {
+	private final static List<Class> findClasses(File directory, String packageName) throws ClassNotFoundException {
 	    List<Class> classes = new ArrayList<Class>();
 	    if (!directory.exists()) {
 	        return classes;
@@ -56,34 +54,34 @@ public final class Utility {
 	    }
 	    return classes;
 	}
-	public static Class[] getClasses(String packageName)
+	public final static Class[] getClasses(String packageName)
 	        throws ClassNotFoundException, IOException {
-	    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-	    assert classLoader != null;
-	    String path = packageName.replace('.', '/');
-	    Enumeration<URL> resources = classLoader.getResources(path);
-	    List<File> dirs = new ArrayList<File>();
+		final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		assert classLoader != null;
+		final String path = packageName.replace('.', '/');
+		final Enumeration<URL> resources = classLoader.getResources(path);
+		final List<File> dirs = new ArrayList<File>();
 	    while (resources.hasMoreElements()) {
 	        URL resource = resources.nextElement();
 	        dirs.add(new File(resource.getFile()));
 	    }
-	    ArrayList<Class> classes = new ArrayList<Class>();
-	    for (File directory : dirs) {
+	    final ArrayList<Class> classes = new ArrayList<Class>();
+	    for (final File directory : dirs) {
 	        classes.addAll(findClasses(directory, packageName));
 	    }
 	    return classes.toArray(new Class[classes.size()]);
 	}
-	public static void sendPacket(Player player, Object packet) {
+	public final static void sendPacket(final Player player,final  Object packet) {
 		try {
-			Object handle = player.getClass().getMethod("getHandle", new Class[0]).invoke(player, new Object[0]);
-			Object playerConnection = handle.getClass().getField("playerConnection").get(handle);
+			final Object handle = player.getClass().getMethod("getHandle", new Class[0]).invoke(player, new Object[0]);
+			final Object playerConnection = handle.getClass().getField("playerConnection").get(handle);
 			playerConnection.getClass().getMethod("sendPacket", new Class[] { getClass("Packet") }).invoke(playerConnection, new Object[] { packet });
 		} catch (Exception e) {
 			e.printStackTrace();
 	   }
 	}
 
-	public static void sendTitle(Player player, Integer fadeIn, Integer stay, Integer fadeOut, String title, String subtitle) {
+	public final static void sendTitle(final Player player, final int fadeIn, Integer stay, Integer fadeOut, String title, String subtitle) {
 
 
 	    try
@@ -121,19 +119,19 @@ public final class Utility {
 	      var11.printStackTrace();
 	    }
 	}
-	public static void executeConsole(String cmd) {
+	public final static void executeConsole(final String cmd) {
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
 	}
-	public static void sendMsg(Player b, String msg) {
+	public final static void sendMsg(final Player b, final String msg) {
 		if (msg.contains("%center%")) { sendCenteredMessage(b, msg.replaceAll("%center%", "")); return; }
 		b.sendMessage(TransColor(msg));
 	}
-	public static Inventory copy(Inventory inventory, InventoryHolder h) {
-	    Inventory inv = Bukkit.createInventory(h, inventory.getSize(), inventory.getTitle());
+	public final static Inventory copy(final Inventory inventory, final InventoryHolder h) {
+		final  Inventory inv = Bukkit.createInventory(h, inventory.getSize(), inventory.getTitle());
 	    inv.setContents(inventory.getContents());
 	    return inv;
 	}
-	public static void sendMsg(CommandSender b, String msg) {
+	public final static void sendMsg(final CommandSender b, final String msg) {
 		if (msg.contains("%center%")) {
 			if (b instanceof Player) {
 			sendCenteredMessage((Player) b, msg.replaceAll("%center%", "")); 
@@ -143,31 +141,31 @@ public final class Utility {
 		return; }
 		b.sendMessage(TransColor(msg));
 	}
-	public static void broadcast(String msg) {
+	public final static void broadcast(final String msg) {
 		if (msg.contains("%center%")) {
 			broadCastCenteredMessage(msg.replaceAll("%center%", ""));
 			return;
 		}
 		Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg));
 	}
-	public static void sendActionBar(Player b, String ActionBar) {
+	public final static void sendActionBar(final Player b, final String ActionBar) {
 		ActionBarAPI.sendActionBar(b, ChatColor.translateAlternateColorCodes('&', ActionBar));
 	}
-	public static void sendConsole(String msg) {
+	public final static void sendConsole(final String msg) {
 		Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', msg));;
 	}
-	public static String TransColor(String c) {
+	public final static String TransColor(final String c) {
 		return ChatColor.translateAlternateColorCodes('&', c);
 	}
 	private final static int CENTER_PX = 154;
 
-	public static void sendCenteredMessage(Player player, String message){
+	public final static void sendCenteredMessage(final Player player, final String message){
 	        if(message == null || message.equals("")) { sendMsg(player, message); return; }
 	                int messagePxSize = 0;
 	                boolean previousCode = false;
 	                boolean isBold = false;
 	               
-	                for(char c : message.toCharArray()){
+	                for(final char c : message.toCharArray()){
 	                        if(c == '§'){
 	                                previousCode = true;
 	                                continue;
@@ -195,7 +193,7 @@ public final class Utility {
 	                }
 	                player.sendMessage(ChatColor.translateAlternateColorCodes('&', sb.toString() + message));
 	        }
-	public static void broadCastCenteredMessage(String message){
+	public final static void broadCastCenteredMessage(final String message){
         if(message == null || message.equals("")) { Bukkit.getServer().broadcastMessage(""); return; }               
                 int messagePxSize = 0;
                 boolean previousCode = false;
@@ -336,27 +334,27 @@ public final class Utility {
                 this.length = length;
         }
        
-        public char getCharacter(){
+        public final char getCharacter(){
                 return this.character;
         }
        
-        public int getLength(){
+        public final int getLength(){
                 return this.length;
         }
        
-        public int getBoldLength(){
+        public final int getBoldLength(){
                 if(this == DefaultFontInfo.SPACE) return this.getLength();
                 return this.length + 1;
         }
        
-        public static DefaultFontInfo getDefaultFontInfo(char c){
+        public final static DefaultFontInfo getDefaultFontInfo(char c){
                 for(DefaultFontInfo dFI : DefaultFontInfo.values()){
                         if(dFI.getCharacter() == c) return dFI;
                 }
                 return DefaultFontInfo.DEFAULT;
         }
 	}
-	public static String[] TransColor(String[] c) {
+	public final static String[] TransColor(final String[] c) {
 		String strf = "";
 		int length = c.length;
 		int cr = 0;
@@ -372,34 +370,34 @@ public final class Utility {
 		strf = TransColor(strf);
 		return strf.split(";");
 	}
-	public static List<String> TransColor(List<String> strlist) {
+	public static final List<String> TransColor(final List<String> strlist) {
 		for (int x = 0; x < strlist.size(); x++) {
 			strlist.set(x, TransColor(strlist.get(x)));
 		}
 		return strlist;
 	}
-	public static void PlaySoundAt(World w, Location p, Sound s, Float vol, Float pit) {
+	public final static void PlaySoundAt(final World w, final Location p, final Sound s, final Float vol, final Float pit) {
 		w.playSound(p, s, vol, pit);;
 	}
-	public static void PlaySound(Player p, Sound s, Float vol, Float pit) {
+	public final static void PlaySound(final Player p, final Sound s, final Float vol, final Float pit) {
 		p.playSound(p.getLocation(), s, vol, pit);
 	}
-	public static ArrayList<Player> near(Entity loc, int radius) {
-		ArrayList<Player> nearby = new ArrayList<>();
-		for (Entity e : loc.getNearbyEntities(radius, radius, radius)) {
+	public final static ArrayList<Player> near(final Entity loc, final int radius) {
+		final ArrayList<Player> nearby = new ArrayList<>();
+		for (final Entity e : loc.getNearbyEntities(radius, radius, radius)) {
 			if (e instanceof Player) {
 				nearby.add((Player) e);
 			}
 		}
 		return nearby;
 	}
-	public static void PlayParticle(World world, Location loc, Effect particle, int count) {
+	public final static void PlayParticle(final World world, final Location loc, final Effect particle, final int count) {
 		world.playEffect(loc, particle, count);
 	}
-	public static void spawnParticle(World world, Particle particle, Location loc, Double Xoff, Double Yoff, Double Zoff, int count) {
+	public final static void spawnParticle(final World world, final Particle particle, final Location loc, final Double Xoff, final Double Yoff, final Double Zoff, final int count) {
 		world.spawnParticle(particle, loc.getX(), loc.getY(), loc.getZ(), count, Xoff, Yoff, Zoff);
 	}
-	public static String normalizeTime(int seconds) {
+	public final static String normalizeTime(final int seconds) {
 		int sec = seconds;
 		int min = 0;
 		int hour = 0;
@@ -433,7 +431,7 @@ public final class Utility {
 		}
 		return "&a&lZERO!";
 	}
-	public static String normalizeTime2(int seconds) {
+	public final static String normalizeTime2(final int seconds) {
 		int sec = seconds;
 		int min = 0;
 		int hour = 0;
@@ -467,14 +465,14 @@ public final class Utility {
 		}
 		return "&a&lZERO!";
 	}
-	public static boolean isEmpty(Inventory inv) {
+	public final static boolean isEmpty(Inventory inv) {
 		int size = inv.getSize();
 		for (int i = 0; i < size; i++) {
 			if (inv.getItem(i) == null) return true;
 		}
 		return false;
 	}
-	public static boolean isEmpty(PlayerInventory inv) {
+	public final static boolean isEmpty(PlayerInventory inv) {
 		return isEmpty(inv);
 	}
 }

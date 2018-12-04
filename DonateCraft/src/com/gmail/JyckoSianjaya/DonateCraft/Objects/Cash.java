@@ -2,13 +2,13 @@ package com.gmail.JyckoSianjaya.DonateCraft.Objects;
 
 public class Cash {
 	private Integer amount = 0;
-	public Cash(int amount) {
+	public Cash(final int amount) {
 		this.amount = amount;
 	}
-	public Integer getCashAmount() { 
+	public final Integer getCashAmount() { 
 		return amount;
 	}
-	public void setCash(int amount) {
+	public final  void setCash(final int amount) {
 		this.amount = amount;
 	}
 }

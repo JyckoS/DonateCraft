@@ -20,12 +20,12 @@ import com.gmail.JyckoSianjaya.DonateCraft.Utils.XMaterial;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.NBT.NBTItem;
 
 
-public class ItemStorage {
+public final class ItemStorage {
 	private static ItemStorage instance;
-	private HashMap<ItemStack, Action> itemaction = new HashMap<ItemStack, Action>();
-	private HashMap<ItemStack, Integer> cost = new HashMap<ItemStack, Integer>();
-	private HashMap<String, ItemStack> itemkey = new HashMap<String, ItemStack>();
-	private ActionStorage act = ActionStorage.getInstance();
+	private final HashMap<ItemStack, Action> itemaction = new HashMap<ItemStack, Action>();
+	private final HashMap<ItemStack, Integer> cost = new HashMap<ItemStack, Integer>();
+	private final HashMap<String, ItemStack> itemkey = new HashMap<String, ItemStack>();
+	private final ActionStorage act = ActionStorage.getInstance();
 	private ItemStack denyitem = null;
 	private ItemStack denyitem2 = null;
 	private ItemStack denyitem3 = null;
@@ -35,9 +35,9 @@ public class ItemStorage {
 	}
 	private void loadDeny() {
 		denyitem = new ItemStack(XMaterial.BARRIER.parseItem());
-		ItemMeta denymt = denyitem.getItemMeta();
+		final ItemMeta denymt = denyitem.getItemMeta();
 		denymt.setDisplayName(Utility.TransColor("&c&lWoopsy!"));
-		ArrayList<String> lores = new ArrayList<String>();
+		final ArrayList<String> lores = new ArrayList<String>();
 		lores.add("&7You can't buy this yet!");
 		denymt.setLore(Utility.TransColor(lores));
 		denyitem.setItemMeta(denymt);
@@ -52,48 +52,48 @@ public class ItemStorage {
 		denyitem3 = denyitem2.clone();
 		denyitem3.setItemMeta(denymt);
 	}
-	public ItemStack getDenyItem3() {
+	public final ItemStack getDenyItem3() {
 		return denyitem3.clone();
 	}
-	public ItemStack getDenyItem2() {
+	public final ItemStack getDenyItem2() {
 		return denyitem2.clone();
 	}
-	public ItemStack getDenyItem() {
+	public final ItemStack getDenyItem() {
 		return denyitem.clone();
 	}
-	public static ItemStorage getInstance() {
+	public final static ItemStorage getInstance() {
 		if (instance == null) {
 			instance = new ItemStorage();
 		}
 		return instance; 
 	}
-	public Action getItemAction(ItemStack item) {
+	public final Action getItemAction(final ItemStack item) {
 		return itemaction.get(item);
 	}
-	public void setCost(ItemStack item, Integer cost) {
+	public final void setCost(final ItemStack item, final Integer cost) {
 		this.cost.put(item, cost);
 	}
-	public Integer getCost(ItemStack item) {
+	public final Integer getCost(final ItemStack item) {
 		return cost.get(item);
 	}
-	public Collection<String> getKeys() {
+	public final Collection<String> getKeys() {
 		return itemkey.keySet();
 	}
-	public void setItemAction(ItemStack item, Action action) {
+	public final void setItemAction(final ItemStack item, final Action action) {
 		itemaction.put(item, action);
 	}
-	public void LoadFiles() {
-		File f = new File(DonateCraft.getInstance().getDataFolder(), "Items.yml");
-		YamlConfiguration it = YamlConfiguration.loadConfiguration(f);
-		ConfigurationSection items = it.getConfigurationSection("Items");
-		Set<String> keys = items.getKeys(false);
-		for (String key : keys) {
-			Integer xxdurability = items.getInt(key + ".DURABILITY");
+	public final void LoadFiles() {
+		final File f = new File(DonateCraft.getInstance().getDataFolder(), "Items.yml");
+		final YamlConfiguration it = YamlConfiguration.loadConfiguration(f);
+		final ConfigurationSection items = it.getConfigurationSection("Items");
+		final Set<String> keys = items.getKeys(false);
+		for (final String key : keys) {
+			final 	Integer xxdurability = items.getInt(key + ".DURABILITY");
 			// Loads important stuff
-			String itemname = TransColor(items.getString(key + ".ITEM_NAME"));
-			List<String> itemlore = TransColor(items.getStringList(key + ".ITEM_LORE"));
-			String requestedmat = items.getString(key + ".MATERIAL");
-			Short durability = xxdurability.shortValue();
+			final String itemname = TransColor(items.getString(key + ".ITEM_NAME"));
+			final List<String> itemlore = TransColor(items.getStringList(key + ".ITEM_LORE"));
+			final 	String requestedmat = items.getString(key + ".MATERIAL");
+			final 	Short durability = xxdurability.shortValue();
 			Material imaterial;
 			try {
 			imaterial = XMaterial.requestMaterial(requestedmat, Byte.valueOf("0"));
@@ -104,23 +104,23 @@ public class ItemStorage {
 			if (imaterial == null) {
 				imaterial = XMaterial.STONE.parseMaterial();
 			}
-			Integer price = items.getInt(key + ".COST");
-			String aname = items.getString(key + ".ACTION");
-			String bperm = items.getString(key + ".BLACKLISTED_PERM");
-			Action action = act.getAction(aname);
-			String rperm = items.getString(key + ".REQUIRED_PERM");
+			final 	Integer price = items.getInt(key + ".COST");
+			final 	String aname = items.getString(key + ".ACTION");
+			final 		String bperm = items.getString(key + ".BLACKLISTED_PERM");
+			final 		Action action = act.getAction(aname);
+			final 		String rperm = items.getString(key + ".REQUIRED_PERM");
 			if (action == null) {
 				Utility.sendConsole("[WARNING] There's no actual action for item key: " + key + ". In 'Items.yml'! Proceed with Caution!");
 			}
 			ItemStack item = new ItemStack(imaterial);
 			item.setDurability(durability);
-			NBTItem nitem = new NBTItem(item);
+			final NBTItem nitem = new NBTItem(item);
 			nitem.setString("DCAction", aname);
 			nitem.setInteger("DCCost", price);
 			nitem.setString("BLISTPERM", bperm);
 			nitem.setString("DCPerm", rperm);
 			item = nitem.getItem();
-			ItemMeta meta = item.getItemMeta();
+			final ItemMeta meta = item.getItemMeta();
 			meta.setDisplayName(itemname);
 			meta.setLore(itemlore);
 			item.setItemMeta(meta);
@@ -129,16 +129,16 @@ public class ItemStorage {
 			setCost(item, price);
 		}
 	}
-	private String TransColor(String str) {
+	private final String TransColor(final String str) {
 		return Utility.TransColor(str);
 	}
-	private List<String> TransColor(List<String> str) {
+	private final List<String> TransColor(final List<String> str) {
 		return Utility.TransColor(str);
 	}
-	public void setItem(String key, ItemStack item) {
+	public final void setItem(final String key, final ItemStack item) {
 		itemkey.put(key, item);
 	}
-	public ItemStack getItem(String key) {
+	public final ItemStack getItem(final String key) {
 		return itemkey.get(key);
 	}
 }

@@ -14,19 +14,19 @@ import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage.Message;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.ACWallet;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 
-public class ACCashCmdHandler {
+public final class ACCashCmdHandler {
 	private static ACCashCmdHandler instance;
-	private LangStorage ls = LangStorage.getInstance();
-	private ACCashBank acb = ACCashBank.getInstance();
+	private final LangStorage ls = LangStorage.getInstance();
+	private final ACCashBank acb = ACCashBank.getInstance();
 	private ACCashCmdHandler() {
 	}
-	public static ACCashCmdHandler getInstance() {
+	public final static ACCashCmdHandler getInstance() {
 		if (instance == null) {
 			instance = new ACCashCmdHandler();
 		}
 		return instance;
 	}
-	public void ManageCmd(CommandSender sender, Command cmd, String[] args) {
+	public final void ManageCmd(final CommandSender sender, final Command cmd, final String[] args) {
 		Player p = null;
 		if (sender instanceof Player) {
 			p = (Player) sender;
@@ -35,7 +35,7 @@ public class ACCashCmdHandler {
 			Utility.sendMsg(sender, ls.getMessage(Message.NOPERM));
 			return;
 		}
-		int alength = args.length;
+		final int alength = args.length;
 		if (alength < 1) {
 			ACWallet acw = null;
 			int money = 0;
@@ -59,7 +59,7 @@ public class ACCashCmdHandler {
 				return;
 			}
 			if (alength < 2) {
-				ArrayList<String> arrays = acb.getTopBalance();
+				final ArrayList<String> arrays = acb.getTopBalance();
 				for (String str : ls.getMessage(LongMessage.ACTOP_OPENING)) {
 					if (str.contains("%r")) {
 						str = str.replaceAll("%r", "1");
@@ -99,7 +99,7 @@ public class ACCashCmdHandler {
 					for (String str : ls.getMessage(LongMessage.NOT_NUMBER)) Utility.sendMsg(sender, str);
 					return;
 				}
-				ArrayList<String> cashs = acb.getTopBalance();
+				final ArrayList<String> cashs = acb.getTopBalance();
 				if (max > cashs.size()) max = cashs.size();
 				if (max < 10) max = 10;
 				for (String str : ls.getMessage(LongMessage.ACTOP_OPENING)) {
@@ -176,7 +176,7 @@ public class ACCashCmdHandler {
 				Utility.sendMsg(sender, "&c&l| &7Please fill the arguments: /accash add <Player> <Amount>");
 				return;
 			}
-			Player eprr = Bukkit.getPlayer(args[1]);
+			final Player eprr = Bukkit.getPlayer(args[1]);
 			if (eprr == null) {
 				Utility.sendMsg(sender, "&c&l| &7Hmm.. Looks like that person doesn't exist!");
 				return;
@@ -211,7 +211,7 @@ public class ACCashCmdHandler {
 				Utility.sendMsg(sender, "&c&l| &7Please fill the arguments: /accash remove <Player> <Amount>");
 				return;
 			}
-			Player rprr = Bukkit.getPlayer(args[1]);
+			final Player rprr = Bukkit.getPlayer(args[1]);
 			if (rprr == null) {
 				Utility.sendMsg(sender, "&c&l| &7Hmm.. Looks like that person doesn't exist!");
 				return;
@@ -244,7 +244,7 @@ public class ACCashCmdHandler {
 				Utility.sendMsg(sender, "&c&l| &7Please fill the player name.&e /accash <Player>");
 				return;
 			}
-			Player plre = Bukkit.getPlayer(args[0]);
+			final Player plre = Bukkit.getPlayer(args[0]);
 			if (plre == null) {
 				Utility.sendMsg(sender, "&c&l| &7Hmm.. Looks like that person doesn't exist!");
 				return;

@@ -4,15 +4,15 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-public class DonateCmdListener implements CommandExecutor {
-	private AdminCmdHandler admincmd = AdminCmdHandler.getInstance();
-	private RedeemCmdHandler redeemcmd = RedeemCmdHandler.getInstance();
-	private StoreCmdHandler storecmd = StoreCmdHandler.getInstance();
-	private CashCmdHandler cashcmd = CashCmdHandler.getInstance();
-	private ACCashCmdHandler accmd = ACCashCmdHandler.getInstance();
+public final class DonateCmdListener implements CommandExecutor {
+	private final AdminCmdHandler admincmd = AdminCmdHandler.getInstance();
+	private final RedeemCmdHandler redeemcmd = RedeemCmdHandler.getInstance();
+	private final StoreCmdHandler storecmd = StoreCmdHandler.getInstance();
+	private final CashCmdHandler cashcmd = CashCmdHandler.getInstance();
+	private final ACCashCmdHandler accmd = ACCashCmdHandler.getInstance();
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String cmdlabel, String[] args) {
-		String cmdname = cmd.getName().toLowerCase();
+	public final boolean onCommand(final CommandSender sender, final Command cmd, final String cmdlabel, final String[] args) {
+		final String cmdname = cmd.getName().toLowerCase();
 		switch (cmdname) {
 		case "recoup":
 		case "retrieve":

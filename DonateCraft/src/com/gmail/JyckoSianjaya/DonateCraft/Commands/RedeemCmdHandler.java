@@ -18,48 +18,48 @@ import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage.Message;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.XSound;
 
-public class RedeemCmdHandler {
+public final class RedeemCmdHandler {
 	private static RedeemCmdHandler instance;
-	private LangStorage ls = LangStorage.getInstance();
-	private RedeemStorage storage = RedeemStorage.getInstance();
-	private CashBank cashbank = CashBank.getInstance();
-	private DCLogger logger = DCLogger.getInstance();
-	private ACCashBank accb = ACCashBank.getInstance();
+	private final LangStorage ls = LangStorage.getInstance();
+	private final RedeemStorage storage = RedeemStorage.getInstance();
+	private final CashBank cashbank = CashBank.getInstance();
+	private final DCLogger logger = DCLogger.getInstance();
+	private final ACCashBank accb = ACCashBank.getInstance();
 	private RedeemCmdHandler() {
 	}
-	public static RedeemCmdHandler getInstance() {
+	public static final RedeemCmdHandler getInstance() {
 		if (instance == null) {
 			instance = new RedeemCmdHandler();
 		}
 		return instance;
 	}
-	public void ManageRedeem(CommandSender sender, Command cmd, String[] args) {
+	public final void ManageRedeem(final CommandSender sender, final Command cmd, final String[] args) {
 		if (!(sender instanceof Player)) {
 			Utility.sendMsg(sender, "&cYou need to be a player to redeem!");
 			return;
 		}
-		Player p = (Player) sender;
+		final Player p = (Player) sender;
 		if (!p.hasPermission("donatecraft.redeem")) {
 			Utility.sendMsg(sender, ls.getMessage(Message.NOPERM));
 			return;
 		}
-		int length = args.length;
+		final int length = args.length;
 		if (length < 1) {
 			for (String str : ls.getMessage(LongMessage.REDEEM_HELP)) {
 				Utility.sendMsg(p, str);
 			}
 			return;
 		}
-		String code = args[0];
+		final String code = args[0];
 		if (!storage.hasCode(code)) {
 			for (String str : ls.getMessage(LongMessage.REDEEM_FAIL)) {
 				Utility.sendMsg(p, str);
 			}
 			return;
 		}
-		RedeemCode rcode = storage.getRedeemCode(code);
-		Cash cash = rcode.getCash();
-		int amount = cash.getCashAmount();
+		final RedeemCode rcode = storage.getRedeemCode(code);
+		final Cash cash = rcode.getCash();
+		final int amount = cash.getCashAmount();
 		Cash pcash;
 		if (cashbank.getCash(p) == null) {
 			pcash = new Cash(0);
@@ -90,10 +90,9 @@ public class RedeemCmdHandler {
 		Utility.PlaySound(p, XSound.FIREWORK_TWINKLE.bukkitSound(), 1.0F, 2.0F);
 		Utility.PlaySound(p, XSound.LEVEL_UP.bukkitSound(), 1.0F, 2.0F);
 
-		ACWallet awallet = accb.getACWallet(p);
+		final ACWallet awallet = accb.getACWallet(p);
 		awallet.setAmount(awallet.getAmount() + amount);
 		storage.removeCode(rcode);
-		rcode = null;
 		return;
 	}
 

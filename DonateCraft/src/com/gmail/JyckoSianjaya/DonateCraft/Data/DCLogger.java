@@ -12,7 +12,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.gmail.JyckoSianjaya.DonateCraft.Main.DonateCraft;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 
-public class DCLogger {
+public final class DCLogger {
 	private File logfile;
 	private FileWriter fw;
 	private PrintWriter pw;
@@ -36,7 +36,7 @@ public class DCLogger {
 			}
 		}.runTaskTimer(DonateCraft.getInstance(), 72000L, 72000L);
 		}
-	public static DCLogger getInstance() {
+	public final static DCLogger getInstance() {
 		if (instance == null) {
 			try {
 				instance = new DCLogger();
@@ -47,11 +47,11 @@ public class DCLogger {
 		}
 		return instance;
 	}
-	public void InitializeStuff() throws IOException  {
+	public final void InitializeStuff() throws IOException  {
 		Utility.sendConsole("[DC] Reinitialized Logs!");
-		Date date = new Date();
-		SimpleDateFormat dateformat = new SimpleDateFormat("dd-MM-yyyy");
-		String cday = dateformat.format(date);
+		final Date date = new Date();
+		final SimpleDateFormat dateformat = new SimpleDateFormat("dd-MM-yyyy");
+		final String cday = dateformat.format(date);
 		logfile = new File(DonateCraft.getInstance().getDataFolder(), "logs" + File.separator + cday + "_DonateLogs.txt");
 		if (!logfile.exists()) {
 			logfile.createNewFile();
@@ -59,10 +59,10 @@ public class DCLogger {
 		fw = new FileWriter(logfile, true);
 		pw = new PrintWriter(fw);
 	}
-	public void LogMessage(String message) {
-		Date date = new Date();
-		SimpleDateFormat sd = new SimpleDateFormat("HH:mm:ss");
-		String ctime = sd.format(date);
+	public final void LogMessage(final String message) {
+		final Date date = new Date();
+		final SimpleDateFormat sd = new SimpleDateFormat("HH:mm:ss");
+		final String ctime = sd.format(date);
 		pw.write(ctime + ":" + message + "\n");
 		pw.flush();
 	}

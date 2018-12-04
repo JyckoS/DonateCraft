@@ -4,32 +4,32 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-public class ConfirmationHolder implements InventoryHolder {
+public final class ConfirmationHolder implements InventoryHolder {
 	private Inventory originalinventory;
 	private int cost = 0;
 	private int originalcost = 0;
 	private ItemStack target;
-	public ConfirmationHolder(Inventory inv, int cost, ItemStack target, int ocost) {
+	public ConfirmationHolder(final Inventory inv, final int cost, final ItemStack target, final int ocost) {
 		this.originalinventory = inv;
 		this.cost = cost;
 		this.target = target;
 		this.originalcost = ocost;
 	}
 	@Override
-	public Inventory getInventory() {
+	public final Inventory getInventory() {
 		// TODO Auto-generated method stub
 		return originalinventory;
 	}
-	public Inventory getOriginalInventory() {
+	public final Inventory getOriginalInventory() {
 		return originalinventory;
 	}
-	public int getCost() {
+	public final int getCost() {
 		return cost;
 	}
-	public ItemStack getTarget() {
+	public final ItemStack getTarget() {
 		return target;
 	}
-	public int getOriginalCost() {
+	public final int getOriginalCost() {
 		return originalcost;
 	}
 	

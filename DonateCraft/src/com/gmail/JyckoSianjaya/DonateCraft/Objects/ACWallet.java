@@ -1,20 +1,20 @@
 package com.gmail.JyckoSianjaya.DonateCraft.Objects;
 
-public class ACWallet {
+public final class ACWallet {
 	private int amount = 0;
 	public ACWallet(int amount) {
 		this.amount = amount;
 	}
-	public int getAmount() {
+	public final int getAmount() {
 		return amount;
 	}
-	public void addAmount(int amount) {
+	public final void addAmount(final int amount) {
 		this.amount+=amount;
 	}
-	public void setAmount(int amount) {
+	public final void setAmount(final int amount) {
 		this.amount = amount;
 	}
-	public void removeAmount(int amount) {
+	public final void removeAmount(final int amount) {
 		this.amount-=amount;
 	}
 }

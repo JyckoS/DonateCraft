@@ -13,8 +13,8 @@ import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 public class LangStorage {
 	private static LangStorage instance;
 	private static String MSG_NOPERM;
-	private HashMap<Message, String> shortmsg = new HashMap<Message, String>();
-	private HashMap<LongMessage, List<String>> longmsg = new HashMap<LongMessage, List<String>>();
+	private final HashMap<Message, String> shortmsg = new HashMap<Message, String>();
+	private final HashMap<LongMessage, List<String>> longmsg = new HashMap<LongMessage, List<String>>();
 	private List<String> MSG_SUCCESSREDEEM;
 	private List<String> MSG_FAILREDEEM;
 	
@@ -45,15 +45,15 @@ public class LangStorage {
 	
 	private LangStorage() {
 	}
-	public static LangStorage getInstance() {
+	public final static LangStorage getInstance() {
 		if (instance == null) {
 			instance = new LangStorage();
 		}
 		return instance;
 	}
-	public void LoadMessage() {
-		File file = new File(DonateCraft.getInstance().getDataFolder(), "lang.yml");
-		YamlConfiguration msg = YamlConfiguration.loadConfiguration(file);
+	public final void LoadMessage() {
+		final File file = new File(DonateCraft.getInstance().getDataFolder(), "lang.yml");
+		final YamlConfiguration msg = YamlConfiguration.loadConfiguration(file);
 		
 		MSG_NOPERM = Color(msg.getString("no_permission"));
 		MSG_SUCCESSREDEEM = Color(msg.getStringList("redeem_success"));
@@ -81,7 +81,7 @@ public class LangStorage {
 		BROADCAST_SUCCESSREDEEM = Color(bc.getStringList("message_red"));
 		resetMaps();
 	}
-	private void resetMaps() {
+	private final void resetMaps() {
 		shortmsg.clear();
 		longmsg.clear();
 		longmsg.put(LongMessage.ACTOP_CLOSING, ACCASH_TOP_CLOSING);
@@ -105,19 +105,19 @@ public class LangStorage {
 		shortmsg.put(Message.CTOP_FORMAT, CASH_TOP_FORMAT);
 		shortmsg.put(Message.ACTOP_FORMAT, ACCASH_TOP_FORMAT);
 	}
-	private String Color(String str) {
+	private final  String Color(final String str) {
 		return Utility.TransColor(str);
 	}
-	private List<String> Color(List<String> str) {
+	private final List<String> Color(final List<String> str) {
 		return Utility.TransColor(str);
 	}
-	public String getMessage(Message msg) {
+	public final String getMessage(final Message msg) {
 		return shortmsg.get(msg);
 	}
-	public List<String> getMessage(LongMessage msg) {
+	public final List<String> getMessage(final LongMessage msg) {
 		return longmsg.get(msg);
 	}
-	public Boolean getDoes(Does does) {
+	public final Boolean getDoes(final Does does) {
 		switch (does.toString()) {
 		case "BROADCASTREDEEM":
 			return DO_BROADCASTREDEEM;
