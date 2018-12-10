@@ -1,7 +1,7 @@
 package com.gmail.JyckoSianjaya.DonateCraft.Data;
 
 import java.io.File;
-
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -11,12 +11,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.gmail.JyckoSianjaya.DonateCraft.Main.DonateCraft;
+import com.gmail.JyckoSianjaya.DonateCraft.Objects.Cash;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.ConfirmationHolder;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.DCHolder;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
@@ -29,6 +31,7 @@ public final class InventoryStorage {
 	private final HashMap<String, Inventory> key = new HashMap<String, Inventory>();
 	private Inventory confirmationinventory;
 	private final ItemStorage is = ItemStorage.getInstance();
+	private List<String> nodiscountlore = new ArrayList<String>();
 	private InventoryStorage() {
 		LoadConfirmation();
 	}
@@ -65,7 +68,11 @@ public final class InventoryStorage {
 	public final Collection<String> getKeys() {
 		return key.keySet();
 	}
-	public final Inventory getInventory(final String key) {
+	public final Inventory getInventory(final String key, final Player p) {
+		Cash c = CashBank.getInstance().getCash(p);
+		if (c != null) {
+			return Utility.copy(this.key.get(key), new DCHolder(), c);
+		}
 		return Utility.copy(this.key.get(key), new DCHolder());
 	}
 	public final boolean hasKey(final String key) {
@@ -141,6 +148,7 @@ public final class InventoryStorage {
 		
 		ItemStack varitem = new ItemStack(XMaterial.valueOf(variable.getString("material")).parseMaterial());
 		varitem.setDurability(Short.valueOf(variable.getString("durability")));
+		this.nodiscountlore = Utility.TransColor(variable.getStringList("lores_discountless"));
 		final NBTItem varnbt = new NBTItem(varitem);
 		varnbt.setString("CCAction", variable.getString("action"));
 		varnbt.setString("custom_actiontype", "var");
@@ -154,6 +162,9 @@ public final class InventoryStorage {
 		dummy.setItem(variable.getInt("slot"), varitem);
 		confirmationinventory = dummy;
 		setKey("confirmation_inventory", dummy);
+	}
+	public List<String> getNoDiscountLore() {
+		return this.nodiscountlore;
 	}
 	private final  String Color(final String str) {
 		return Utility.TransColor(str);

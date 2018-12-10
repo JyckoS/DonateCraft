@@ -3,6 +3,7 @@ package com.gmail.JyckoSianjaya.DonateCraft.Manager;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -33,7 +34,6 @@ public final class ConfirmationManager {
 	public final void CreateConfirmation(final Inventory originalinv, final Player target, final int cost, ItemStack item, final int ocost) {
 		final Inventory newconf = invs.getConfirmationInventory(originalinv, cost, ocost, item);
 		final int varslot = data.getConfirmationSlot(ConfirmationSlot.VARIABLE);
-		
 		// VarItem = Original Raw Item (to modify)
 		// Item = Item Source (Bought item)
 		final ItemStack varitem = newconf.getItem(varslot);
@@ -47,8 +47,12 @@ public final class ConfirmationManager {
 			varitemmeta.setLore(itemmeta.getLore());
 		}
 		else {
-			final List<String> varlore = varitemmeta.getLore();
-			final ArrayList<String> newlore = new ArrayList<String>();
+			final double discount = DataStorage.getInstance().getDiscount();
+			List<String> varlore = varitemmeta.getLore();
+			ArrayList<String> newlore = new ArrayList<String>();
+			if (discount <= 0.0) {
+				varlore = InventoryStorage.getInstance().getNoDiscountLore();
+			}
 			for (String str : varlore) {
 				if (str.contains("%s")) str = str.replaceAll("%s", "" + cost);
 				if (str.contains("%o")) str = str.replaceAll("%o", "" + ocost);
@@ -56,6 +60,7 @@ public final class ConfirmationManager {
 
 				newlore.add(str);
 			}
+			
 			varitemmeta.setLore(newlore);
 		}
 		String dname = varitemmeta.getDisplayName();

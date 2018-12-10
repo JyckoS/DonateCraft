@@ -23,6 +23,7 @@ import com.gmail.JyckoSianjaya.DonateCraft.Data.DataStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.InventoryStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.ItemStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage;
+import com.gmail.JyckoSianjaya.DonateCraft.Data.NumberStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.PlayerData;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.RedeemStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Events.DCEventHandler;
@@ -49,6 +50,7 @@ public final class DonateCraft extends JavaPlugin {
 	private ConfirmationManager cmm;
 	private DCRunnable dcr;
 	private ActionBarAPI aba;
+	private NumberStorage str = NumberStorage.getInstance();
 	@Override
 	public final void onEnable() {
 		Utility.sendConsole("&6&l<<--&e&l DonateCraft &6&l&m-->>&r");
@@ -163,7 +165,7 @@ public final class DonateCraft extends JavaPlugin {
 	}
 	private final void RegisterCommands() {
 		final CommandExecutor executor = new DonateCmdListener();
-		this.getCommand("redeem").setExecutor(executor);
+		this.getCommand("redeems").setExecutor(executor);
 		this.getCommand("store").setExecutor(executor);
 		this.getCommand("donatecraft").setExecutor(executor);
 		this.getCommand("cash").setExecutor(executor);

@@ -26,6 +26,8 @@ import com.gmail.JyckoSianjaya.DonateCraft.Data.DataStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.InventoryStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.ItemStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage;
+import com.gmail.JyckoSianjaya.DonateCraft.Data.NumberStorage;
+import com.gmail.JyckoSianjaya.DonateCraft.Data.RandomResult;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage.Message;
 import com.gmail.JyckoSianjaya.DonateCraft.Main.DonateCraft;
 import com.gmail.JyckoSianjaya.DonateCraft.Manager.ConfirmationManager;
@@ -53,7 +55,10 @@ public final class AdminCmdHandler {
 	}
 	public final void ManageAdminCmd(final CommandSender sender, final Command cmd, final String[] args) {
 		if (!sender.hasPermission("donatecraft.admin")) {
-			Utility.sendMsg(sender, lstorage.getMessage(Message.NOPERM));
+			Utility.sendMsg(sender, " ");
+			Utility.sendMsg(sender, " &7Running  &6&lDonate&e&lCraft &8&lV.&8" + minstance.getDescription().getVersion());
+			Utility.sendMsg(sender, "    &7Made by &f&oJicko Sianjaya &7(Gober)");
+			Utility.sendMsg(sender, " ");
 			return;
 		}
 		final int length = args.length;
@@ -227,7 +232,7 @@ public final class AdminCmdHandler {
 				return;
 			}
 			Inventory inventory = null;
-			inventory = istorage.getInventory(guiname);
+			inventory = istorage.getInventory(guiname, (Player) sender);
 			Player p = null;
 			if (length < 3) {
 				p = (Player) sender;
@@ -357,12 +362,20 @@ public final class AdminCmdHandler {
 			}
 			if (newcode.toLowerCase().equals("random")) {
 				String base = "";
-				final Random random = new Random();
-				final int ra = random.nextInt(10000);
-				final int ra2 = random.nextInt(10000);
-				final int ra3 = random.nextInt(10000);
-				final int ra4 = random.nextInt(10000);
-				base = ra + "-" + ra2 + "-" + ra3 + "-" + ra4;
+				final RandomResult res = NumberStorage.getInstance().getResults();
+				String val1 = "";
+				String val2 = "";
+				String val3 = "";
+					for (int si = 0; si < 5; si++) {
+						val1+=res.getRandom();
+					}
+					for (int si = 0; si < 5; si++) {
+						val2+=res.getRandom();
+					}
+					for (int si = 0; si < 5; si++) {
+						val3+=res.getRandom();
+					}
+				base = val1 + "-" + val2 + "-" + val3;
 				for (final RedeemCode a : RedeemStorage.getInstance().getRedeemCodes()) {
 					if (a.getCode() == base) {
 						Utility.sendMsg(sender, "&c&l█ &7Oops, there is also a code named: '&f&o" + newcode + "&e'");

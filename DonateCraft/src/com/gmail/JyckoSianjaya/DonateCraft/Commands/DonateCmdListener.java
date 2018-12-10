@@ -16,7 +16,10 @@ public final class DonateCmdListener implements CommandExecutor {
 		switch (cmdname) {
 		case "recoup":
 		case "retrieve":
-		case "redeem":
+		case "redeems":
+		case "code":
+		case "rcode":
+		case "redeemcode":
 			redeemcmd.ManageRedeem(sender, cmd, args);
 			return true;
 		case "store":

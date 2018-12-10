@@ -28,10 +28,8 @@ public final class StoreCmdHandler {
 			return;
 		}
 		final Player p = (Player) sender;
-		final Inventory inv = storage.getInventory("Main");
-		Utility.PlaySound(p, XSound.HORSE_BREATHE.bukkitSound(), 0.4F, 2.0F);
+		final Inventory inv = storage.getInventory("Main", p);
 		Utility.PlaySound(p, XSound.NOTE_PLING.bukkitSound(), 0.7F, 2.0F);
-
 		p.openInventory(inv);
 	}
 }

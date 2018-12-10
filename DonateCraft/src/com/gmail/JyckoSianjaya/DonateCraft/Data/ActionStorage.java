@@ -45,8 +45,7 @@ public final class ActionStorage {
 				final String[] sta = act.replaceAll("%SNDS", "").split("-");
 				final String rsound = sta[0];
 				try {
-				final XSound snd = XSound.requestXSound(rsound);
-				final Sound snde = snd.bukkitSound();
+				final Sound snd = XSound.requestXSound(rsound);
 				} catch (IllegalArgumentException e) {
 					Utility.sendConsole("&6DC >  &c[WARNING] There's no Available sound for sound name: " + rsound + ", in the Action: " + str);
 				}

@@ -69,7 +69,7 @@ public final class Action {
 					final String guiname = str.replaceAll("%OGUI", "").replaceAll(" ", "");
 					// get a gui with that name
 					// if gui = null cancels
-					final Inventory gui = InventoryStorage.getInstance().getInventory(guiname);
+					final Inventory gui = InventoryStorage.getInstance().getInventory(guiname, p);
 					p.closeInventory();
 					p.openInventory(gui);
 					break;
@@ -85,11 +85,10 @@ public final class Action {
 					final String astr = str.replaceAll("%SNDS", "");
 
 					final String[] sound = astr.split("-");
-					final XSound snd = XSound.requestXSound(sound[0]);
-					final Sound dsound = snd.bukkitSound();
+					final Sound snd = XSound.requestXSound(sound[0]);
 					final Float volume = Float.valueOf(sound[1]);
 					final Float pitch = Float.valueOf(sound[2]);
-					Utility.PlaySound(p, dsound, volume, pitch);
+					Utility.PlaySound(p, snd, volume, pitch);
 					break;
 				case "%TITL":
 					final String ta = str.replaceAll("%TITL", "");

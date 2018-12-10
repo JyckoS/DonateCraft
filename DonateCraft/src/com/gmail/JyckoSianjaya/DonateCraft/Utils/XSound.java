@@ -2,6 +2,8 @@ package com.gmail.JyckoSianjaya.DonateCraft.Utils;
 
 import java.util.HashMap;
 
+import org.bukkit.Sound;
+
 /**
  * Version independent spigot sounds.
  *
@@ -229,15 +231,16 @@ public enum XSound {
         throw new IllegalArgumentException("Found no valid sound name for " + this.name());
     }
 	private static HashMap<String, XSound> cachedSearch = new HashMap<>();
-	public static XSound requestXSound(String name){
+	public static Sound requestXSound(String name){
+		if (Sound.valueOf(name) != null) return Sound.valueOf(name);
 		if(cachedSearch.containsKey(name.toUpperCase())){
-			return cachedSearch.get(name.toUpperCase());
+			return cachedSearch.get(name.toUpperCase()).bukkitSound();
 		}
 		for(XSound snd : XSound.values()){
 			for (String str : snd.versionDependentNames) {
 			if(name.toUpperCase().equals(str)) {
 				cachedSearch.put(str, snd);
-				return snd;
+				return snd.bukkitSound();
 			}
 			}
 		}

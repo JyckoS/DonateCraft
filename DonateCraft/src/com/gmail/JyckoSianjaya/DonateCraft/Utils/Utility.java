@@ -24,6 +24,8 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import com.gmail.JyckoSianjaya.DonateCraft.Objects.Cash;
+
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -128,6 +130,11 @@ public final class Utility {
 	}
 	public final static Inventory copy(final Inventory inventory, final InventoryHolder h) {
 		final  Inventory inv = Bukkit.createInventory(h, inventory.getSize(), inventory.getTitle());
+	    inv.setContents(inventory.getContents());
+	    return inv;
+	}
+	public final static Inventory copy(final Inventory inventory, final InventoryHolder h, final Cash c) {
+		final  Inventory inv = Bukkit.createInventory(h, inventory.getSize(), inventory.getTitle().replaceAll("%cash%", c.getCashAmount() + ""));
 	    inv.setContents(inventory.getContents());
 	    return inv;
 	}

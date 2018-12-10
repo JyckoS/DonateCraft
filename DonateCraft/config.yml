@@ -11,6 +11,10 @@ confirmation:
         - "&e&m                            "
         - "&f You will buy this item for &e%s &7(From &6&m%o&7) "
         - "&e&m                            "
+        lores_discountless:
+        - "&e&m                            "
+        - "&f You will buy this item for only &e%s!"
+        - "&e&m                            "
         use_original_lore: false
         use_original_material: true
         material: CHEST
