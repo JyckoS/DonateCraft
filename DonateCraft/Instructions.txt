@@ -34,6 +34,10 @@ Variables:
 - $cash - Displays Player's Cash
 - $acash - Displays Player's Accumulated Cash
 
+Item_Lore_Variables:
+- %p% - Shows price
+- %d% - Shows discounted price
+
 ################
      FILES
 ################

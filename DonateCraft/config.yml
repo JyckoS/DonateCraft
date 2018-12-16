@@ -1,6 +1,22 @@
 current_discount: 10.0
 # DISCOUNT IN PERCENTAGE
 
+MySQL:
+  use_sql: false
+  host: "localhost"
+  port: 3306
+  database: "myDatabase"
+  username: "user"
+  password: "password"
+
+pricing:
+  auto_price: true
+  position_first: false
+  pricing_normal:
+  - "&7&oPrice: &6%price%"
+  pricing_discount:
+  - "&7&oPrice: &6%final% &c&m%price%"
+
 confirmation:
   size: 27
   title: "&6&l** &e&lConfirm your Purchase &6&l**"

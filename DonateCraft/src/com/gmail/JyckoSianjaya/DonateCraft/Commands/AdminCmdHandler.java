@@ -287,6 +287,7 @@ public final class AdminCmdHandler {
 			final Action act = astorage.getAction(actkey);
 			if (act == null) {
 				Utility.sendMsg(sender, "&c&l█ &7That action does not exist!");
+				return;
 			}
 			Utility.sendMsg(sender, "&e&l&m          &r &6&lCommands &e&l&m          ");
 			Utility.sendMsg(sender, "   ");

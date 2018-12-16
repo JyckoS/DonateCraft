@@ -82,11 +82,7 @@ public final class CashCmdHandler {
 				final int aalength = arrays.size();
 				if (aalength < 10) {
 					for (int i = 0; i < aalength; i++) {
-						try {
-							arrays.get(i);
-						} catch (IndexOutOfBoundsException e) {
-							break;
-						}
+						if (i >= aalength) break;
 						final String thebal = arrays.get(i);
 						final String[] info = thebal.split("~");
 						final String msg = lang.getMessage(Message.CTOP_FORMAT).replaceAll("%RANK%", "" + (i + 1)).replaceAll("%p", info[0]).replaceAll("%cash%", info[1]);
@@ -94,12 +90,8 @@ public final class CashCmdHandler {
 					}
 				}
 				else {
-					for (int i = 0; i < 9; i++) {
-						try {
-							arrays.get(i);
-						} catch (IndexOutOfBoundsException e) {
-							break;
-						}
+					for (int i = 0; i < 10; i++) {
+					if (i >= aalength) break;
 					final String thebal = arrays.get(i);
 					final String[] info = thebal.split("~");
 					final String msg = lang.getMessage(Message.CTOP_FORMAT).replaceAll("%RANK%", "" + (i + 1)).replaceAll("%p", info[0]).replaceAll("%cash%", info[1]);
@@ -139,11 +131,7 @@ public final class CashCmdHandler {
 				}
 
 				for (int i = max - 10 ; i < max - 1; i++) {
-					try {
-						cashs.get(i);
-					} catch (IndexOutOfBoundsException e) {
-						break;
-					}
+					if (i >= cashs.size()) break;
 					final String thebal = cashs.get(i);
 					final String[] info = thebal.split("~");
 					final String msg = lang.getMessage(Message.CTOP_FORMAT).replaceAll("%RANK%", "" + (i + 1)).replaceAll("%p", info[0]).replaceAll("%cash%", info[1]);

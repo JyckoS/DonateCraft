@@ -156,11 +156,8 @@ public final class DonateCraft extends JavaPlugin {
 				continue;
 			}
 			final Cash cash = bank.getCash(p);
-			try {
 			pd.setData(p, cash);
-			} catch (IOException e) {
-				Utility.sendConsole("[DC] Can't save data for Player &e" + p.getName() + "&r!");
-			}
+
 		}
 	}
 	private final void RegisterCommands() {

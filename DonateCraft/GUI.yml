@@ -29,6 +29,7 @@ GUI:
        27: "NEUTRAL"
   Perks:
     Size: 18
+    Discount: 25
     Title: "&c&lStore &e&l&m &e&l> &b&lPerks"
     Items:
        0: "NEUTRALP"
@@ -43,6 +44,7 @@ GUI:
        11: "BUYPERK1"
   Ranks:
     Size: 27
+    Discount: 30
     Title: "&c&lStore &e&l&m &e&l> &a&lRanks"
     Items:
        0: "NEUTRALRANK"

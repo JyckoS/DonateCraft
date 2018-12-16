@@ -3,13 +3,18 @@ Items:
     ITEM_NAME: "&a&m--&a&l Purchase VIP&a&m--"
     ITEM_LORE:
     - "  "
-    - "&6&lCost: &e25000 Cash"
+    - "&6&lCost: &e%p% Cash"
+    - "  "
+    ITEM_LORE_DISCOUNT:
+    - "  "
+    - "&6&lCost: &e%p% Cash &7(From &8&m%d%&7)"
     - "  "
     MATERIAL: EMERALD
     BLACKLISTED_PERM: "purchased.vip"
     REQUIRED_PERM: "buy.vip"
     DURABILITY: 0
     COST: 25000
+    DISCOUNT: 10.5
     ACTION: "VIPACTION"
   BUYMVIP:
     ITEM_NAME: "&1&m--&b&l Purchase MVIP&1&m--"
@@ -21,6 +26,7 @@ Items:
     BLACKLISTED_PERM: "purchased.mvip"
     REQUIRED_PERM: "buy.mvip"
     DURABILITY: 0
+    DISCOUNT: 10.5
     COST: 50000
     ACTION: "MVIPACTION"
   BUYRANK:

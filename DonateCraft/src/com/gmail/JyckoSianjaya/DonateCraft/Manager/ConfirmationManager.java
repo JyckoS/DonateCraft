@@ -13,6 +13,7 @@ import com.gmail.JyckoSianjaya.DonateCraft.Data.DataStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.DataStorage.Do;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.InventoryStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
+import com.gmail.JyckoSianjaya.DonateCraft.Utils.NBT.NBTItem;
 
 public final class ConfirmationManager {
 	private static ConfirmationManager mng;
@@ -42,14 +43,18 @@ public final class ConfirmationManager {
 		}
 		final ItemMeta varitemmeta = varitem.getItemMeta();
 		final ItemMeta itemmeta = item.getItemMeta();
+		final NBTItem nbt = new NBTItem(varitem);
 		final String itemoriginalname = itemmeta.getDisplayName();
 		if (data.getDoes(Do.var_original_lore)) {
 			varitemmeta.setLore(itemmeta.getLore());
 		}
 		else {
-			final double discount = DataStorage.getInstance().getDiscount();
+		    double discount = DataStorage.getInstance().getDiscount();
 			List<String> varlore = varitemmeta.getLore();
 			ArrayList<String> newlore = new ArrayList<String>();
+			if (nbt.hasKey("DCDiscount")) {
+				discount = nbt.getDouble("DCDiscount");
+			}
 			if (discount <= 0.0) {
 				varlore = InventoryStorage.getInstance().getNoDiscountLore();
 			}

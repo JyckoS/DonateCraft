@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -87,12 +88,19 @@ public final class ItemStorage {
 		final YamlConfiguration it = YamlConfiguration.loadConfiguration(f);
 		final ConfigurationSection items = it.getConfigurationSection("Items");
 		final Set<String> keys = items.getKeys(false);
+		DonateCraft.getInstance().reloadConfig();
+		final FileConfiguration config = DonateCraft.getInstance().getConfig();
+		final Boolean autoprice = config.getConfigurationSection("pricing").getBoolean("auto_price");
+		final Boolean pricelinefirst = config.getConfigurationSection("pricing").getBoolean("position_first");
+		final List<String> pricing_lore_normal = Utility.TransColor(config.getConfigurationSection("pricing").getStringList("pricing_normal"));
+		final List<String> pricing_lore_discount = Utility.TransColor(config.getConfigurationSection("pricing").getStringList("pricing_discount"));
 		for (final String key : keys) {
 			final 	Integer xxdurability = items.getInt(key + ".DURABILITY");
 			// Loads important stuff
 			final String itemname = TransColor(items.getString(key + ".ITEM_NAME"));
-			final List<String> itemlore = TransColor(items.getStringList(key + ".ITEM_LORE"));
-			final 	String requestedmat = items.getString(key + ".MATERIAL");
+			List<String> itemlore = TransColor(items.getStringList(key + ".ITEM_LORE"));
+
+			String requestedmat = items.getString(key + ".MATERIAL");
 			final 	Short durability = xxdurability.shortValue();
 			Material imaterial;
 			try {
@@ -105,16 +113,109 @@ public final class ItemStorage {
 				imaterial = XMaterial.STONE.parseMaterial();
 			}
 			final 	Integer price = items.getInt(key + ".COST");
+			ArrayList<String> newlore = new ArrayList<String>();
+			for (String str : itemlore) {
+				if (str.contains("%p%")) str = str.replaceAll("%p%", price + "");
+				newlore.add(str);
+			}
+			itemlore = newlore;
 			final 	String aname = items.getString(key + ".ACTION");
 			final 		String bperm = items.getString(key + ".BLACKLISTED_PERM");
 			final 		Action action = act.getAction(aname);
 			final 		String rperm = items.getString(key + ".REQUIRED_PERM");
+			final Double discount = items.getDouble(key + ".DISCOUNT");
+			if (discount != null && discount > 0 || config.getDouble("current_discount") > 0) {
+				itemlore = TransColor(items.getStringList(key + ".ITEM_LORE_DISCOUNT"));
+				ArrayList<String> secondlo = new ArrayList<String>();
+				for (String str : secondlo) {
+					if (str.contains("%p%")) str = str.replaceAll("%p%", price + "");
+				}
+				Boolean hasspecific = false;
+				Boolean hasglobal = false;
+				if (discount != null && discount > 0) hasspecific = true;
+				if (config.getDouble("current_discount") > 0) {
+					hasglobal = true;
+				}
+				int discountprice = 0;
+				Boolean placed = false;
+				if (hasspecific) {
+					discountprice = (int) (price * (discount / 100));
+					placed = true;
+				}
+				if (!placed && hasglobal) {
+					discountprice = (int) (price * (config.getDouble("current_discount")) / 100);
+					placed = true;
+				}
+				itemlore.clear();
+				for (String str : secondlo) {
+					if (str.contains("%d%")) str = str.replaceAll("%d%", discountprice + "");
+					itemlore.add(str);
+ 				}
+			}
+			if (autoprice) {
+				if (price > 0) {
+					Boolean added = false;
+			if (!pricelinefirst) {
+			if (discount == null || discount <= 0) {
+				Double realdiscount = config.getDouble("current_discount");
+				if (!added) {
+				if (realdiscount > 0) {
+					for (String str : pricing_lore_discount) {
+						itemlore.add(str.replaceAll("%price%", price + "").replaceAll("%final%", (int) (price - price * realdiscount / 100) + ""));
+					}
+					added = true;
+				}
+				}
+				if (!added) {
+				for (String str : pricing_lore_normal) {
+					itemlore.add(str.replaceAll("%price%", price + ""));
+				}
+				added = true;
+				}
+			}
+			else if (discount != null && discount > 0) {
+				if (!added) {
+				for (String str : pricing_lore_discount) {
+					itemlore.add(str.replaceAll("%price%", price + "").replaceAll("%final%", (int) (price - price * discount / 100) + ""));
+				}
+				added = true;
+				}
+			}
+			}
+			else {
+				List<String> newlos = new ArrayList<String>();
+				if (discount == null || discount <= 0) {
+					if (!added) {
+					for (String str : pricing_lore_normal) {
+						newlos.add(str.replaceAll("%price%", price + ""));
+					}
+					added = true;
+					}
+				}
+				else if (discount != null && discount > 0) {
+					if (!added) {
+					for (String str : pricing_lore_discount) {
+						newlos.add(str.replaceAll("%price%", price + "").replaceAll("%final%", (int) (price - price * discount / 100) + ""));
+					}
+					added = true;
+					}
+				}
+				for (String str : itemlore) {
+					newlos.add(str);
+				}
+				itemlore = new ArrayList<String>(newlos);
+			}
+			}
+			}
 			if (action == null) {
 				Utility.sendConsole("[WARNING] There's no actual action for item key: " + key + ". In 'Items.yml'! Proceed with Caution!");
 			}
 			ItemStack item = new ItemStack(imaterial);
 			item.setDurability(durability);
 			final NBTItem nitem = new NBTItem(item);
+			if (discount != null && discount > 0) {
+			nitem.setDouble("DCDiscount", discount);
+			}
 			nitem.setString("DCAction", aname);
 			nitem.setInteger("DCCost", price);
 			nitem.setString("BLISTPERM", bperm);

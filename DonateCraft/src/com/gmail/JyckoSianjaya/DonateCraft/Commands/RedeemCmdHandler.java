@@ -1,5 +1,7 @@
 package com.gmail.JyckoSianjaya.DonateCraft.Commands;
 
+import java.io.IOException;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -8,6 +10,7 @@ import com.gmail.JyckoSianjaya.DonateCraft.Data.ACCashBank;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.CashBank;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.DCLogger;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage;
+import com.gmail.JyckoSianjaya.DonateCraft.Data.PlayerData;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.RedeemStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.ACWallet;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.Cash;
@@ -15,6 +18,8 @@ import com.gmail.JyckoSianjaya.DonateCraft.Objects.RedeemCode;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage.Does;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage.LongMessage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage.Message;
+import com.gmail.JyckoSianjaya.DonateCraft.Manager.DCRunnable;
+import com.gmail.JyckoSianjaya.DonateCraft.Manager.DCTask;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.XSound;
 
@@ -93,6 +98,7 @@ public final class RedeemCmdHandler {
 		final ACWallet awallet = accb.getACWallet(p);
 		awallet.setAmount(awallet.getAmount() + amount);
 		storage.removeCode(rcode);
+		PlayerData.getInstance().setData(p, pcash);
 		return;
 	}
 

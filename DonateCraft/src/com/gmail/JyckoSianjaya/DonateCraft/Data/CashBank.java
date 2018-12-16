@@ -63,6 +63,7 @@ public class CashBank {
 			final YamlConfiguration cashs = YamlConfiguration.loadConfiguration(file);
 			final int cash = cashs.getInt("cash");
 			final Cash cas = new Cash(cash);
+			if (cash == 0) continue;
 			setCash(uuid, cas);
 		}
 	}
@@ -81,17 +82,31 @@ public class CashBank {
 			folder.mkdirs();
 		}
 		final ArrayList<Integer> caches = new ArrayList<Integer>();
+		final HashMap<Integer, ArrayList<String>> owners = new HashMap<Integer, ArrayList<String>>();
 		for (final File ss : folder.listFiles()) {
 			final YamlConfiguration yml = YamlConfiguration.loadConfiguration(ss);
 			final UUID uuid = UUID.fromString(yml.getString("uuid"));
 			final int acs = yml.getInt("cash");
-			final String owner = Bukkit.getOfflinePlayer(uuid).getName();
+			final String owner = yml.getString("nick");
+			if (acs == 0) continue;
 			caches.add(acs);
+			if (owners.containsKey(acs)) {
+				ArrayList<String> ownerz = owners.get(acs);
+				ownerz.add(owner);
+				owners.put(acs, ownerz);
+				continue;
+			}
+			ArrayList<String> nwes = new ArrayList<String>();
+			nwes.add(owner);
+			owners.put(acs, nwes);
+			continue;
 		}
 		Collections.sort(caches);
 		Collections.reverse(caches);
 		for (final int ie : caches) {
-			addTop(ie);
+			for (String str : owners.get(ie)) {
+			addTop(ie, str);
+			}
 		}
 	}
 	public final void resetCashBalance() {
@@ -110,22 +125,36 @@ public class CashBank {
 			folder.mkdirs();
 		}
 		final ArrayList<Integer> caches = new ArrayList<Integer>();
+		final HashMap<Integer, ArrayList<String>> owners = new HashMap<Integer, ArrayList<String>>();
 		for (final File ss : folder.listFiles()) {
 			final YamlConfiguration yml = YamlConfiguration.loadConfiguration(ss);
 			final UUID uuid = UUID.fromString(yml.getString("uuid"));
 			final int acs = yml.getInt("cash");
-			final String owner = Bukkit.getOfflinePlayer(uuid).getName();
+			final String owner = yml.getString("nick");
+			if (acs == 0) continue;
 			addCache(owner, acs);
 			caches.add(acs);
+			if (owners.containsKey(acs)) {
+				ArrayList<String> ownerz = owners.get(acs);
+				ownerz.add(owner);
+				owners.put(acs, ownerz);
+				continue;
+			}
+			ArrayList<String> lakad = new ArrayList<String>();
+			lakad.add(owner);
+			owners.put(acs, lakad);
+			continue;
 		}
 		Collections.sort(caches);
 		Collections.reverse(caches);
 		for (int ie : caches) {
-			addTop(ie);
+			for (String str : owners.get(ie)) {
+				addTop(ie, str);
+			}
 		}
 	}
-	private final void addTop(int key) {
-		this.TOP_CASH_BALANCES.add(cachecash.get(key) + "~" + key);
+	private final void addTop(int key, String owner) {
+		this.TOP_CASH_BALANCES.add(owner + "~" + key);
 	}
 	private final void addCache(String u, int amount) {
 		this.cachecash.put(amount, u);

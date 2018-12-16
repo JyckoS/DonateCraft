@@ -93,7 +93,11 @@ public final class DCEventHandler {
 			 }
 			 int cost = 0;
 			 cost = titem.getInteger("DCCost");
-			 cost = (int) (cost - cost * ds.getDiscount());
+			 Double disc = ds.getDiscount();
+			 if (titem.hasKey("DCDiscount")) {
+				 disc = titem.getDouble("DCDiscount") / 100;
+			 }
+			 cost = (int) (cost - cost * disc);
 			 final  int amount = cash.getCashAmount();
 			 if (amount < cost) {
 				 final  int less = cost - amount;
@@ -109,6 +113,7 @@ public final class DCEventHandler {
 				 return;
 			 }
 			 cash.setCash(amount - cost);
+			 PlayerData.getInstance().setData(p, cash);
 			 if (cost > 0) {
 				 loger.LogMessage("[PURCHASE] " + p.getName() + " bought action '" + akey + "' for " + cost + ", cash left: " + cash.getCashAmount() + "(DISCOUNT: " + ds.getRawDiscount() + "%)");
 			 }
@@ -240,7 +245,12 @@ public final class DCEventHandler {
 		 int cost = 0;
 		 cost = rritem.getInteger("DCCost");
 		 final int ocost = cost;
-		 cost = (int) (cost - cost * ds.getDiscount());
+		 if (rritem.hasKey("DCDiscount")) {
+			 cost = (int) (cost - cost * rritem.getDouble("DCDiscount") / 100);
+		 }
+		 else {
+			 cost = (int) (cost - cost * ds.getDiscount());
+		 }
 		 final int amount = cash.getCashAmount();
 		 if (amount < cost) {
 			 Utility.PlaySound(p, XSound.VILLAGER_NO.bukkitSound(), 0.4F, 0.85F);
@@ -302,11 +312,7 @@ public final class DCEventHandler {
 		if (cash == null) {
 			return;
 		}
-		try {
-			pd.setData(p, cash);
-		} catch (final IOException e1) {
-			// TODO Auto-generated catch block
-			Utility.sendConsole("[DC] Can't save data for Player &e" + p.getName() + "&r!");
-		}
+		pd.setData(p, cash);
+
 	}
 }

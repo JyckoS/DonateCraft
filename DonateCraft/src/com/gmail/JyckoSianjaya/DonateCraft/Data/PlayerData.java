@@ -8,6 +8,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import com.gmail.JyckoSianjaya.DonateCraft.Main.DonateCraft;
+import com.gmail.JyckoSianjaya.DonateCraft.Manager.DCRunnable;
+import com.gmail.JyckoSianjaya.DonateCraft.Manager.DCTask;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.ACWallet;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.Cash;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
@@ -25,20 +27,43 @@ public final class PlayerData {
 		}
 		return instance;
 	}
-	public final void setData(final Player p, final Cash cash) throws IOException {
+	public final void setData(final Player p, final Cash cash) {
+		DCRunnable.getInstance().addTask(new DCTask(){
+			int health = 1;
+			@Override
+			public void runTask() {
 		final File f = new File(MainInst.getDataFolder(), "playerdata" + File.separator +  p.getUniqueId() + ".yml");
-		if (!f.exists()) {
-			f.createNewFile();
-		}
 		final YamlConfiguration file = YamlConfiguration.loadConfiguration(f);
 		file.set("cash", cash.getCashAmount());
 		file.set("uuid", p.getUniqueId().toString());
+		file.set("nick", p.getName());
 	    ACWallet accw = new ACWallet(0);
 		if (acbank.getACWallet(p) != null) {
 			accw = acbank.getACWallet(p);
 		}
+		if (accw.getAmount() <=0 && cash.getCashAmount() <= 0) return;
 		file.set("ac-cash", accw.getAmount());
+		try {
+		if (!f.exists()) {
+			f.createNewFile();
+		}
 		file.save(f);
+		} catch (IOException e) {
+		}
+			}
+
+			@Override
+			public void reduceTicks() {
+				// TODO Auto-generated method stub
+				health--;
+			}
+
+			@Override
+			public int getLiveTicks() {
+				// TODO Auto-generated method stub
+				return health;
+			}
+	});
 	}
 	public final Cash getCash(final Player p) {
 		Cash cash2 = null;
@@ -46,6 +71,8 @@ public final class PlayerData {
 		final File pfile = new File(MainInst.getDataFolder(), "playerdata" + File.separator + uu + ".yml");
 		final YamlConfiguration pyml = YamlConfiguration.loadConfiguration(pfile);
 		if (!pfile.exists()) {
+			return null;
+			/*
 			try {
 			pfile.createNewFile();
 			final YamlConfiguration writer = YamlConfiguration.loadConfiguration(pfile);
@@ -56,6 +83,7 @@ public final class PlayerData {
 			} catch (final IOException e) {
 				Utility.sendConsole("[DC] Couldn't save file for Player: " + p.getName());
 			}
+			*/
 		}
 		if (cbank.getCash(uu) == null) {
 			final int cash = pyml.getInt("cash");

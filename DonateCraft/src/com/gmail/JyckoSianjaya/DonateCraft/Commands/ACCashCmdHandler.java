@@ -54,7 +54,7 @@ public final class ACCashCmdHandler {
 		case "top":
 		case "leaderboard":
 		case "tops":
-			if (!sender.hasPermission("cash.top")) {
+			if (!sender.hasPermission("accash.top")) {
 				Utility.sendMsg(sender, ls.getMessage(Message.NOPERM));
 				return;
 			}
@@ -69,12 +69,8 @@ public final class ACCashCmdHandler {
 					}
 					Utility.sendMsg(sender, str);
 				}
-				for (int i = 0; i < 9; i++) {
-					try {
-						arrays.get(i);
-					} catch (IndexOutOfBoundsException e) {
-						break;
-					}
+				for (int i = 0; i < 10; i++) {
+					if (i >= arrays.size()) break;
 					String thebal = arrays.get(i);
 					String[] info = thebal.split("~");
 					String msg = ls.getMessage(Message.ACTOP_FORMAT).replaceAll("%RANK%", "" + (i + 1)).replaceAll("%p", info[0]).replaceAll("%cash%", info[1]);
@@ -100,7 +96,7 @@ public final class ACCashCmdHandler {
 					return;
 				}
 				final ArrayList<String> cashs = acb.getTopBalance();
-				if (max > cashs.size()) max = cashs.size();
+				if (max >= cashs.size()) max = cashs.size();
 				if (max < 10) max = 10;
 				for (String str : ls.getMessage(LongMessage.ACTOP_OPENING)) {
 					if (str.contains("%r")) {
@@ -111,12 +107,8 @@ public final class ACCashCmdHandler {
 					}
 					Utility.sendMsg(sender, str);
 				}
-				for (int i = max - 10; i < max - 1; i++) {
-					try {
-						cashs.get(i);
-					} catch (IndexOutOfBoundsException e) {
-						break;
-					}
+				for (int i = max - 10; i < max; i++) {
+					if (i >= cashs.size()) break;
 					String thebal = cashs.get(i);
 					String[] info = thebal.split("~");
 					String msg = ls.getMessage(Message.ACTOP_FORMAT).replaceAll("%RANK%", "" + (i + 1)).replaceAll("%p", info[0]).replaceAll("%cash%", info[1]);
