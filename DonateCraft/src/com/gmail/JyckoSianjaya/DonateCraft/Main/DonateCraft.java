@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Scanner;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -30,9 +31,11 @@ import com.gmail.JyckoSianjaya.DonateCraft.Events.DCEventHandler;
 import com.gmail.JyckoSianjaya.DonateCraft.Events.DCEvents;
 import com.gmail.JyckoSianjaya.DonateCraft.Manager.ConfirmationManager;
 import com.gmail.JyckoSianjaya.DonateCraft.Manager.DCRunnable;
+import com.gmail.JyckoSianjaya.DonateCraft.Objects.ACWallet;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.Cash;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.RedeemCode;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.ActionBarAPI;
+import com.gmail.JyckoSianjaya.DonateCraft.Utils.UUIDCacher;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 
 public final class DonateCraft extends JavaPlugin {
@@ -51,6 +54,7 @@ public final class DonateCraft extends JavaPlugin {
 	private DCRunnable dcr;
 	private ActionBarAPI aba;
 	private NumberStorage str = NumberStorage.getInstance();
+	private UUIDCacher cach;
 	@Override
 	public final void onEnable() {
 		Utility.sendConsole("&6&l<<--&e&l DonateCraft &6&l&m-->>&r");
@@ -83,6 +87,7 @@ public final class DonateCraft extends JavaPlugin {
 	public final void onDisable() {
 		saveAllCash();
 		saveAllcode();
+		cach.saveData();
 	}
 	private final void registerMetrics() {
 		Metrics metrics = new Metrics(this);
@@ -118,6 +123,7 @@ public final class DonateCraft extends JavaPlugin {
 		this.acb = acb;
 		this.dcr = DCRunnable.getInstance();
 		aba = ActionBarAPI.getInstance();
+		this.cach = UUIDCacher.getInstance();
 	}
 	private final void LoadManagers() {
 		cmm = ConfirmationManager.getInstance();
@@ -151,13 +157,19 @@ public final class DonateCraft extends JavaPlugin {
 	private final void saveAllCash() {
 		final CashBank bank = CashBank.getInstance();
 		final PlayerData pd = PlayerData.getInstance();
-		for (final Player p : Bukkit.getOnlinePlayers()) {
-			if (bank.getCash(p) == null) {
+		for (final UUID p : this.cb.getKeys()) {
+			if (bank.getCash(p) == null && acb.getACWallet(p) == null) {
 				continue;
 			}
-			final Cash cash = bank.getCash(p);
-			pd.setData(p, cash);
-
+			Cash cash = bank.getCash(p);
+			if (cash == null) {
+				cash = new Cash(0);
+			}
+			ACWallet wallet = acb.getACWallet(p);
+			if (wallet == null) {
+				wallet = new ACWallet(0);
+			}
+			pd.setData(p);
 		}
 	}
 	private final void RegisterCommands() {

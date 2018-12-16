@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -46,8 +47,15 @@ public class CashBank {
 		return Cashes.get(p.getUniqueId());
 	}
 	public final Cash getCash(final UUID uuid) {
+		if (Cashes.containsKey(uuid)) {
 		return Cashes.get(uuid);
+		}
+		if (PlayerData.getInstance().getCash(uuid) != null) {
+			return PlayerData.getInstance().getCash(uuid);
+		}
+		return null;
 	}
+	public final Set<UUID> getKeys() { return Cashes.keySet(); }
 	public final void setCash(final Player p, final Cash cash) {
 		Cashes.put(p.getUniqueId(), cash);
 	}
@@ -88,6 +96,7 @@ public class CashBank {
 			final UUID uuid = UUID.fromString(yml.getString("uuid"));
 			final int acs = yml.getInt("cash");
 			final String owner = yml.getString("nick");
+			this.setCash(uuid, new Cash(acs));
 			if (acs == 0) continue;
 			caches.add(acs);
 			if (owners.containsKey(acs)) {
@@ -132,6 +141,7 @@ public class CashBank {
 			final int acs = yml.getInt("cash");
 			final String owner = yml.getString("nick");
 			if (acs == 0) continue;
+			this.setCash(uuid, new Cash(acs));
 			addCache(owner, acs);
 			caches.add(acs);
 			if (owners.containsKey(acs)) {
@@ -164,5 +174,9 @@ public class CashBank {
 	}
 	public final String getTopBalances(int index) {
 		return this.TOP_CASH_BALANCES.get(index);
+	}
+	public boolean hasCash(UUID ruuid) {
+		// TODO Auto-generated method stub
+		return this.Cashes.containsKey(ruuid);
 	}
 }

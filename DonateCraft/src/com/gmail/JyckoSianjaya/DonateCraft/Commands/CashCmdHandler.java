@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -11,10 +12,14 @@ import org.bukkit.entity.Player;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.ACCashBank;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.CashBank;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage;
+import com.gmail.JyckoSianjaya.DonateCraft.Data.PlayerData;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage.LongMessage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage.Message;
+import com.gmail.JyckoSianjaya.DonateCraft.Manager.DCRunnable;
+import com.gmail.JyckoSianjaya.DonateCraft.Manager.DCTask;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.ACWallet;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.Cash;
+import com.gmail.JyckoSianjaya.DonateCraft.Utils.UUIDCacher;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 
 public final class CashCmdHandler {
@@ -150,6 +155,7 @@ public final class CashCmdHandler {
 			}
 		case "set":
 		case "put":
+		{
 			if (!sender.hasPermission("cash.admin")) {
 				return;
 			}
@@ -158,9 +164,17 @@ public final class CashCmdHandler {
 				return;
 			}
 			final Player p = Bukkit.getPlayer(args[1]);
+			UUID uuid = null;
 			if (p == null) {
-				Utility.sendMsg(sender, "&c&l| &7That person doesn't exist!");
-				return;
+				UUID get = UUIDCacher.getInstance().getUUID(args[1]);
+				if (get == null) {
+					Utility.sendMsg(sender, "&7That player NEVER existed.");
+					return;
+				}
+				uuid = get;
+			}
+			else {
+				uuid = p.getUniqueId();
 			}
 			int cashamount = 0;
 			try {
@@ -169,18 +183,59 @@ public final class CashCmdHandler {
 				Utility.sendMsg(sender, "&c&l| &7That's not a number!");
 				return;
 			}
-			final UUID uuid = p.getUniqueId();
 			final Cash cash = cashb.getCash(uuid);
 			if (cash == null) {
-			cashb.setCash(p.getUniqueId(), new Cash(cashamount));
-			Utility.sendMsg(sender, "&2&l| &7Successfuly changed the Cash amount for &f" + p.getName() + "&7 into &f" + cashamount);
+			cashb.setCash(uuid, new Cash(cashamount));
+			String uud = uuid.toString();
+			DCRunnable.getInstance().addTask(new DCTask() {
+				final UUID uu = UUID.fromString(uud);
+				int health = 1;
+				@Override
+				public void runTask() {
+					// TODO Auto-generated method stub
+					PlayerData.getInstance().setData(uu);
+				}
+				@Override
+				public void reduceTicks() {
+					// TODO Auto-generated method stub
+					health--;
+				}
+				@Override
+				public int getLiveTicks() {
+					// TODO Auto-generated method stub
+					return health;
+				}
+			});
+			Utility.sendMsg(sender, "&2&l| &7Successfuly changed the Cash amount for &f" + args[1] + "&7 into &f" + cashamount);
 			return;
 			}
 			cash.setCash(cashamount);
-			Utility.sendMsg(sender, "&a&l| &7Successfuly changed the Cash amount for &f" + p.getName() + "&7 into &f" + cashamount);
+			String uud = uuid.toString();
+			DCRunnable.getInstance().addTask(new DCTask() {
+				final UUID uu = UUID.fromString(uud);
+				int health = 1;
+				@Override
+				public void runTask() {
+					// TODO Auto-generated method stub
+					PlayerData.getInstance().setData(uu);
+				}
+				@Override
+				public void reduceTicks() {
+					// TODO Auto-generated method stub
+					health--;
+				}
+				@Override
+				public int getLiveTicks() {
+					// TODO Auto-generated method stub
+					return health;
+				}
+			});
+			Utility.sendMsg(sender, "&a&l| &7Successfuly changed the Cash amount for &f" + args[1] + "&7 into &f" + cashamount);
 			return;
+		}
 		case "add":
 		case "increase":
+		{
 			if (!sender.hasPermission("cash.admin")) {
 				return;
 			}
@@ -189,9 +244,17 @@ public final class CashCmdHandler {
 				return;
 			}
 			final Player ap = Bukkit.getPlayer(args[1]);
+			UUID auuid = null;
 			if (ap == null) {
-				Utility.sendMsg(sender, "&c&l| &7That person doesn't exist!");
-				return;
+				UUID get = UUIDCacher.getInstance().getUUID(args[1]);
+				if (get == null) {
+					Utility.sendMsg(sender, "&7That player NEVER existed.");
+					return;
+				}
+				auuid = get;
+			}
+			else {
+				auuid = ap.getUniqueId();
 			}
 			int addcashamount = 0;
 			try {
@@ -201,26 +264,68 @@ public final class CashCmdHandler {
 				return;
 			}
 			final ACCashBank acb = ACCashBank.getInstance();
-			ACWallet wallet = acb.getACWallet(ap.getUniqueId());
+			ACWallet wallet = acb.getACWallet(auuid);
 			if (wallet == null) {
-				acb.setACWallet(ap.getUniqueId(), new ACWallet(0));
-				wallet = acb.getACWallet(ap);
+				acb.setACWallet(auuid, new ACWallet(0));
+				wallet = acb.getACWallet(auuid);
 			}
 			wallet.addAmount(addcashamount);
-			final UUID auuid = ap.getUniqueId();
 			final Cash acash = cashb.getCash(auuid);
 			if (acash == null) {
 			cashb.setCash(auuid, new Cash(addcashamount));
-			Utility.sendMsg(sender, "&2&l| &7Successfuly &aincreased&7 the Cash amount for &f" + ap.getName() + "&7 into &f" + addcashamount);
+			
+			Utility.sendMsg(sender, "&2&l| &7Successfuly &aincreased&7 the Cash amount for &f" + args[1] + "&7 into &f" + addcashamount);
+			String uud = auuid.toString();
+			DCRunnable.getInstance().addTask(new DCTask() {
+				final UUID uu = UUID.fromString(uud);
+				int health = 1;
+				@Override
+				public void runTask() {
+					// TODO Auto-generated method stub
+					PlayerData.getInstance().setData(uu);
+				}
+				@Override
+				public void reduceTicks() {
+					// TODO Auto-generated method stub
+					health--;
+				}
+				@Override
+				public int getLiveTicks() {
+					// TODO Auto-generated method stub
+					return health;
+				}
+			});
 			return;
 			}
 			final int currcash = acash.getCashAmount();
 			acash.setCash(addcashamount+currcash);
-			Utility.sendMsg(sender, "&a&l| &7Successfuly &aincreased&7 the Cash amount for &f" + ap.getName() + "&7 into &f" + (addcashamount+currcash));
+			Utility.sendMsg(sender, "&a&l| &7Successfuly &aincreased&7 the Cash amount for &f" + args[1] + "&7 into &f" + (addcashamount+currcash));
+			String uud = auuid.toString();
+			DCRunnable.getInstance().addTask(new DCTask() {
+				final UUID uu = UUID.fromString(uud);
+				int health = 1;
+				@Override
+				public void runTask() {
+					// TODO Auto-generated method stub
+					PlayerData.getInstance().setData(uu);
+				}
+				@Override
+				public void reduceTicks() {
+					// TODO Auto-generated method stub
+					health--;
+				}
+				@Override
+				public int getLiveTicks() {
+					// TODO Auto-generated method stub
+					return health;
+				}
+			});
 			return;
+		}
 		case "remove":
 		case "decrease":
 		case "take":
+		{
 			if (!sender.hasPermission("cash.admin")) {
 				return;
 			}
@@ -229,9 +334,17 @@ public final class CashCmdHandler {
 				return;
 			}
 			final Player rp = Bukkit.getPlayer(args[1]);
+			UUID ruuid = null;
 			if (rp == null) {
-				Utility.sendMsg(sender, "&c&l| &7That person doesn't exist!");
-				return;
+				UUID get = UUIDCacher.getInstance().getUUID(args[1]);
+				if (get == null) {
+					Utility.sendMsg(sender, "&7That player NEVER existed.");
+					return;
+				}
+				ruuid = get;
+			}
+			else {
+				ruuid = rp.getUniqueId();
 			}
 			int rcashamount = 0;
 			try {
@@ -240,11 +353,30 @@ public final class CashCmdHandler {
 				Utility.sendMsg(sender, "&c&l| &7That's not a number!");
 				return;
 			}
-			final UUID ruuid = rp.getUniqueId();
 			final Cash rcash = cashb.getCash(ruuid);
 			if (rcash == null) {
 			cashb.setCash(ruuid, new Cash(0));
-			Utility.sendMsg(sender, "&2&l| &7Successfuly &cdecreased&7 the Cash amount for &f" + rp.getName() + "&7 into &f" + 0);
+			String uud = ruuid.toString();
+			DCRunnable.getInstance().addTask(new DCTask() {
+				final UUID uu = UUID.fromString(uud);
+				int health = 1;
+				@Override
+				public void runTask() {
+					// TODO Auto-generated method stub
+					PlayerData.getInstance().setData(uu);
+				}
+				@Override
+				public void reduceTicks() {
+					// TODO Auto-generated method stub
+					health--;
+				}
+				@Override
+				public int getLiveTicks() {
+					// TODO Auto-generated method stub
+					return health;
+				}
+			});
+			Utility.sendMsg(sender, "&2&l| &7Successfuly &cdecreased&7 the Cash amount for &f" + args[1] + "&7 into &f" + 0);
 			return;
 			}
 			final int currdcash = rcash.getCashAmount();
@@ -253,25 +385,57 @@ public final class CashCmdHandler {
 				fina = 0;
 			}
 			rcash.setCash(fina);
-			Utility.sendMsg(sender, "&a&l| &7Successfuly &cdecreased&7 the Cash amount for &f" + rp.getName() + "&7 into &f" + fina);
+			String uud = ruuid.toString();
+			DCRunnable.getInstance().addTask(new DCTask() {
+				final UUID uu = UUID.fromString(uud);
+				int health = 1;
+				@Override
+				public void runTask() {
+					// TODO Auto-generated method stub
+					PlayerData.getInstance().setData(uu);
+				}
+				@Override
+				public void reduceTicks() {
+					// TODO Auto-generated method stub
+					health--;
+				}
+				@Override
+				public int getLiveTicks() {
+					// TODO Auto-generated method stub
+					return health;
+				}
+			});
+			Utility.sendMsg(sender, "&a&l| &7Successfuly &cdecreased&7 the Cash amount for &f" + args[1] + "&7 into &f" + fina);
 			return;
+		}
 		default:
+		{
 			final Player play = Bukkit.getPlayer(args[0]);
+			UUID ruuid = null;
 			if (play == null) {
-				Utility.sendMsg(sender, "&c&l| &7That person doesn't exist!");
-				return;
+				UUID get = UUIDCacher.getInstance().getUUID(args[0]);
+				if (get == null) {
+					Utility.sendMsg(sender, "&7That player NEVER existed.");
+					return;
+				}
+				ruuid = get;
+			}
+			else {
+				ruuid = play.getUniqueId();
 			}
 			Cash cashe = null;
-			if (cashb.hasCash(play)) {
-			cashe = cashb.getCash(play);
+			if (cashb.hasCash(ruuid)) {
+			cashe = cashb.getCash(ruuid);
 			}
+			String name = args[0];
+			if (play != null) name = play.getName();
 			int money = 0;
 			if (cashe != null) {
 				money = cashe.getCashAmount();
 			}
 			for (String str : lang.getMessage(LongMessage.SHOW_CASH_OTHERS)) {
 				if (str.contains("%p")) {
-					str = str.replaceAll("%p", play.getName());
+					str = str.replaceAll("%p", name);
 				}
 				if (str.contains("%CASH%")) {
 					str = str.replaceAll("%CASH%", "" + money);
@@ -279,6 +443,7 @@ public final class CashCmdHandler {
 				Utility.sendMsg(sender, str);
 			}
 			return;
+		}
 		}
 	}
 }

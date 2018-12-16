@@ -50,6 +50,9 @@ public final class ACCashBank {
 	public final ACWallet getACWallet(final Player p) {
 		return accs.get(p.getUniqueId());
 	}
+	public final Boolean hasWallet(final UUID p) {
+		return accs.containsKey(p);
+	}
 	public final ACWallet getACWallet(final UUID uuid) {
 		return accs.get(uuid);
 	}
@@ -66,6 +69,7 @@ public final class ACCashBank {
 			final UUID uuid = UUID.fromString(yml.getString("uuid"));
 			final int acs = yml.getInt("ac-cash");
 			final String owner = yml.getString("nick");
+			accs.put(uuid, new ACWallet(acs));
 			if (acs == 0) continue;
 			addCache(owner, acs);
 			caches.add(acs);
@@ -104,6 +108,7 @@ public final class ACCashBank {
 			if (acs == 0) continue;
 			addCache(owner, acs);
 			caches.add(acs);
+			accs.put(uuid, new ACWallet(acs));
 			if (owners.containsKey(acs)) {
 				ArrayList<String> ownerz = owners.get(acs);
 				ownerz.add(owner);

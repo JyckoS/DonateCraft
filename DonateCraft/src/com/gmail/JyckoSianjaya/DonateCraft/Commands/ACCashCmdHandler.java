@@ -1,6 +1,7 @@
 package com.gmail.JyckoSianjaya.DonateCraft.Commands;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -9,9 +10,13 @@ import org.bukkit.entity.Player;
 
 import com.gmail.JyckoSianjaya.DonateCraft.Data.ACCashBank;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage;
+import com.gmail.JyckoSianjaya.DonateCraft.Data.PlayerData;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage.LongMessage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage.Message;
+import com.gmail.JyckoSianjaya.DonateCraft.Manager.DCRunnable;
+import com.gmail.JyckoSianjaya.DonateCraft.Manager.DCTask;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.ACWallet;
+import com.gmail.JyckoSianjaya.DonateCraft.Utils.UUIDCacher;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 
 public final class ACCashCmdHandler {
@@ -54,6 +59,7 @@ public final class ACCashCmdHandler {
 		case "top":
 		case "leaderboard":
 		case "tops":
+		{
 			if (!sender.hasPermission("accash.top")) {
 				Utility.sendMsg(sender, ls.getMessage(Message.NOPERM));
 				return;
@@ -125,8 +131,10 @@ public final class ACCashCmdHandler {
 				}
 				return;
 			}
+		}
 		case "set":
 		case "put":
+		{
 			if (!sender.hasPermission("accash.admin")) {
 				Utility.sendMsg(sender, ls.getMessage(Message.NOPERM));
 				return;
@@ -135,10 +143,18 @@ public final class ACCashCmdHandler {
 				Utility.sendMsg(sender, "&c&l| &7Please fill the arguments: /accash set <Player> <Amount>");
 				return;
 			}
-			Player prr = Bukkit.getPlayer(args[1]);
+			final Player prr = Bukkit.getPlayer(args[1]);
+			UUID ruuid = null;
 			if (prr == null) {
-				Utility.sendMsg(sender, "&c&l| &7Hmm.. Looks like that person doesn't exist!");
-				return;
+				UUID get = UUIDCacher.getInstance().getUUID(args[1]);
+				if (get == null) {
+					Utility.sendMsg(sender, "&7That player NEVER existed.");
+					return;
+				}
+				ruuid = get;
+			}
+			else {
+				ruuid = prr.getUniqueId();
 			}
 			int aaamount = 0;
 			try {
@@ -148,18 +164,61 @@ public final class ACCashCmdHandler {
 				return;
 			}
 			ACWallet pwallet = null;
-			if (acb.hasWallet(prr)) {
-				pwallet = acb.getACWallet(prr);
+			if (acb.hasWallet(ruuid)) {
+				pwallet = acb.getACWallet(ruuid);
 			}			if (pwallet == null) {
-				acb.setACWallet(prr, new ACWallet(aaamount));
-				Utility.sendMsg(sender, "&a&l[!] &7Successfully changed &f" + prr.getName() + "&7's accumulated cash into &e" + aaamount + " &8(From 0)");
+				acb.setACWallet(ruuid, new ACWallet(aaamount));
+				Utility.sendMsg(sender, "&a&l[!] &7Successfully changed &f" + args[1] + "&7's accumulated cash into &e" + aaamount + " &8(From 0)");
+				String uud = ruuid.toString();
+				DCRunnable.getInstance().addTask(new DCTask() {
+					final UUID uu = UUID.fromString(uud);
+					int health = 1;
+					@Override
+					public void runTask() {
+						// TODO Auto-generated method stub
+						PlayerData.getInstance().setData(uu);
+					}
+					@Override
+					public void reduceTicks() {
+						// TODO Auto-generated method stub
+						health--;
+					}
+					@Override
+					public int getLiveTicks() {
+						// TODO Auto-generated method stub
+						return health;
+					}
+				});
 				return;
 			}
-			Utility.sendMsg(sender, "&a&l[!] &7Successfully changed &f" + prr.getName() + "&7's accumulated cash into &e" + aaamount + "&8(From " + pwallet.getAmount() + ")");
+			Utility.sendMsg(sender, "&a&l[!] &7Successfully changed &f" + args[1] + "&7's accumulated cash into &e" + aaamount + "&8(From " + pwallet.getAmount() + ")");
 			pwallet.setAmount(aaamount);
+			this.acb.setACWallet(ruuid, pwallet);
+			String uud = ruuid.toString();
+			DCRunnable.getInstance().addTask(new DCTask() {
+				final UUID uu = UUID.fromString(uud);
+				int health = 1;
+				@Override
+				public void runTask() {
+					// TODO Auto-generated method stub
+					PlayerData.getInstance().setData(uu);
+				}
+				@Override
+				public void reduceTicks() {
+					// TODO Auto-generated method stub
+					health--;
+				}
+				@Override
+				public int getLiveTicks() {
+					// TODO Auto-generated method stub
+					return health;
+				}
+			});
 			return;
+		}
 		case "add":
 		case "increase":
+		{
 			if (!sender.hasPermission("accash.admin")) {
 				Utility.sendMsg(sender, ls.getMessage(Message.NOPERM));
 				return;
@@ -169,9 +228,17 @@ public final class ACCashCmdHandler {
 				return;
 			}
 			final Player eprr = Bukkit.getPlayer(args[1]);
+			UUID ruuid = null;
 			if (eprr == null) {
-				Utility.sendMsg(sender, "&c&l| &7Hmm.. Looks like that person doesn't exist!");
-				return;
+				UUID get = UUIDCacher.getInstance().getUUID(args[1]);
+				if (get == null) {
+					Utility.sendMsg(sender, "&7That player NEVER existed.");
+					return;
+				}
+				ruuid = get;
+			}
+			else {
+				ruuid = eprr.getUniqueId();
 			}
 			int aamount = 0;
 			try {
@@ -181,20 +248,63 @@ public final class ACCashCmdHandler {
 				return;
 			}
 			ACWallet awallet = null;
-			if (acb.hasWallet(eprr)) {
-				awallet = acb.getACWallet(eprr);
+			if (acb.hasWallet(ruuid)) {
+				awallet = acb.getACWallet(ruuid);
 			}			
 			if (awallet == null) {
-				acb.setACWallet(eprr, new ACWallet(aamount));
-				Utility.sendMsg(sender, "&a&l[!] &7Successfully &a&nincreased&7 &f" + eprr.getName() + "&7's accumulated cash into &e" + aamount + " &8(From 0)");
+				acb.setACWallet(ruuid, new ACWallet(aamount));
+				Utility.sendMsg(sender, "&a&l[!] &7Successfully &a&nincreased&7 &f" + args[1] + "&7's accumulated cash into &e" + aamount + " &8(From 0)");
+				String uud = ruuid.toString();
+				DCRunnable.getInstance().addTask(new DCTask() {
+					final UUID uu = UUID.fromString(uud);
+					int health = 1;
+					@Override
+					public void runTask() {
+						// TODO Auto-generated method stub
+						PlayerData.getInstance().setData(uu);
+					}
+					@Override
+					public void reduceTicks() {
+						// TODO Auto-generated method stub
+						health--;
+					}
+					@Override
+					public int getLiveTicks() {
+						// TODO Auto-generated method stub
+						return health;
+					}
+				});
 				return;
 			}
-			Utility.sendMsg(sender, "&a&l[!] &7Successfully &a&nincreased&r &f" + eprr.getName() + "&7's accumulated cash by &e" + aamount + "&8(From " + awallet.getAmount() + ") &7now have &e" + awallet.getAmount() + aamount);
+			Utility.sendMsg(sender, "&a&l[!] &7Successfully &a&nincreased&r &f" + args[1] + "&7's accumulated cash by &e" + aamount + "&8(From " + awallet.getAmount() + ") &7now have &e" + awallet.getAmount() + aamount);
 			awallet.addAmount(aamount);
+			this.acb.setACWallet(ruuid, awallet);
+			String uud = ruuid.toString();
+			DCRunnable.getInstance().addTask(new DCTask() {
+				final UUID uu = UUID.fromString(uud);
+				int health = 1;
+				@Override
+				public void runTask() {
+					// TODO Auto-generated method stub
+					PlayerData.getInstance().setData(uu);
+				}
+				@Override
+				public void reduceTicks() {
+					// TODO Auto-generated method stub
+					health--;
+				}
+				@Override
+				public int getLiveTicks() {
+					// TODO Auto-generated method stub
+					return health;
+				}
+			});
 			return;
+		}
 		case "remove":
 		case "reduce":
 		case "decrease":
+		{
 			if (!sender.hasPermission("accash.admin")) {
 				Utility.sendMsg(sender, ls.getMessage(Message.NOPERM));
 				return;
@@ -204,30 +314,81 @@ public final class ACCashCmdHandler {
 				return;
 			}
 			final Player rprr = Bukkit.getPlayer(args[1]);
+			UUID ruuid = null;
 			if (rprr == null) {
-				Utility.sendMsg(sender, "&c&l| &7Hmm.. Looks like that person doesn't exist!");
-				return;
+				UUID get = UUIDCacher.getInstance().getUUID(args[1]);
+				if (get == null) {
+					Utility.sendMsg(sender, "&7That player NEVER existed.");
+					return;
+				}
+				ruuid = get;
+			}
+			else {
+				ruuid = rprr.getUniqueId();
 			}
 			int ramount = 0;
 			try {
-				aamount = Integer.parseInt(args[2]);
+				ramount = Integer.parseInt(args[2]);
 			} catch (NumberFormatException e) {
 				Utility.sendMsg(sender, "&c&l| &7I believe, that's not a number.");
 				return;
 			}
 			ACWallet rwallet = null;
-			if (acb.hasWallet(rprr)) {
-				rwallet = acb.getACWallet(rprr);
+			if (acb.hasWallet(ruuid)) {
+				rwallet = acb.getACWallet(ruuid);
 			}
 			if (rwallet == null) {
-				acb.setACWallet(rprr, new ACWallet(aamount));
-				Utility.sendMsg(sender, "&a&l[!] &7Successfully &c&ndecreased&7 &f" + rprr.getName() + "&7's accumulated cash into &e" + "0" + " &8(From 0)");
+				acb.setACWallet(ruuid, new ACWallet(ramount));
+				String uud = ruuid.toString();
+				DCRunnable.getInstance().addTask(new DCTask() {
+					final UUID uu = UUID.fromString(uud);
+					int health = 1;
+					@Override
+					public void runTask() {
+						// TODO Auto-generated method stub
+						PlayerData.getInstance().setData(uu);
+					}
+					@Override
+					public void reduceTicks() {
+						// TODO Auto-generated method stub
+						health--;
+					}
+					@Override
+					public int getLiveTicks() {
+						// TODO Auto-generated method stub
+						return health;
+					}
+				});
+				Utility.sendMsg(sender, "&a&l[!] &7Successfully &c&ndecreased&7 &f" + args[1] + "&7's accumulated cash into &e" + "0" + " &8(From 0)");
 				return;
 			}
 			rwallet.removeAmount(ramount);
-			Utility.sendMsg(sender, "&a&l[!] &7Successfully &c&ndecreased&r &f" + rprr.getName() + "&7's accumulated cash by &e" + ramount + "&8(From " + rwallet.getAmount() + ") &7now have &e" + rwallet.getAmount() + ramount);
+			String uud = ruuid.toString();
+			DCRunnable.getInstance().addTask(new DCTask() {
+				final UUID uu = UUID.fromString(uud);
+				int health = 1;
+				@Override
+				public void runTask() {
+					// TODO Auto-generated method stub
+					PlayerData.getInstance().setData(uu);
+				}
+				@Override
+				public void reduceTicks() {
+					// TODO Auto-generated method stub
+					health--;
+				}
+				@Override
+				public int getLiveTicks() {
+					// TODO Auto-generated method stub
+					return health;
+				}
+			});
+			this.acb.setACWallet(ruuid, rwallet);
+			Utility.sendMsg(sender, "&a&l[!] &7Successfully &c&ndecreased&r &f" + args[1] + "&7's accumulated cash by &e" + ramount + "&8(From " + rwallet.getAmount() + ") &7now have &e" + rwallet.getAmount() + ramount);
 			return;
+		}
 		default:
+		{
 			if (!sender.hasPermission("accash.check.others")) {
 				Utility.sendMsg(sender, ls.getMessage(Message.NOPERM));
 				return;
@@ -237,21 +398,35 @@ public final class ACCashCmdHandler {
 				return;
 			}
 			final Player plre = Bukkit.getPlayer(args[0]);
+			UUID target = null;
+			String name = "";
 			if (plre == null) {
-				Utility.sendMsg(sender, "&c&l| &7Hmm.. Looks like that person doesn't exist!");
-				return;
+					UUID get = UUIDCacher.getInstance().getUUID(args[0]);
+					if (get == null) {
+						Utility.sendMsg(sender, "&c&l| &7Hmm.. Looks like that person doesn't exist!");
+						return;
+					}
+					target = get;
+					name = UUIDCacher.getInstance().getNick(get);
+			}
+			else {
+				target = plre.getUniqueId();
+			}
+			if (plre != null) {
+				name = plre.getName();
 			}
 			ACWallet ppwallet = null;
 			int money = 0;
-			if (acb.hasWallet(plre)) {
-				ppwallet = acb.getACWallet(plre);
+			if (acb.hasWallet(target)) {
+				ppwallet = acb.getACWallet(target);
 				money = ppwallet.getAmount();
 			}
 			for (String cms : ls.getMessage(LongMessage.SHOW_ACASH_OTHERS)) {
 				if (cms.contains("%CASH%")) cms = cms.replaceAll("%CASH%", money + "");
-				if (cms.contains("%p")) cms = cms.replaceAll("%p", plre.getName());
+				if (cms.contains("%p")) cms = cms.replaceAll("%p", name);
 				Utility.sendMsg(sender, cms);
 			}
+		}
 		}
 	}
 }

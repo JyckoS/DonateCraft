@@ -28,6 +28,7 @@ import com.gmail.JyckoSianjaya.DonateCraft.Objects.Action;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.Cash;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.ConfirmationHolder;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.DCHolder;
+import com.gmail.JyckoSianjaya.DonateCraft.Utils.UUIDCacher;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.XSound;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.NBT.NBTItem;
@@ -305,6 +306,7 @@ public final class DCEventHandler {
 	public final void ManagePlayerJoin(final PlayerJoinEvent e) {
 		final Player p = e.getPlayer();
 		final Cash cash = pd.getCash(p);
+		UUIDCacher.getInstance().setUUID(e.getPlayer().getName(), e.getPlayer().getUniqueId());
 	}
 	public final void ManagePlayerQuit(final PlayerQuitEvent e) {
 		final Player p = e.getPlayer();

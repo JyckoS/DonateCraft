@@ -35,6 +35,7 @@ import com.gmail.JyckoSianjaya.DonateCraft.Data.RedeemStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.Action;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.Cash;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.RedeemCode;
+import com.gmail.JyckoSianjaya.DonateCraft.Utils.UUIDCacher;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.XSound;
 
@@ -166,7 +167,22 @@ public final class AdminCmdHandler {
 					Utility.PlaySound((Player) sender, XSound.BAT_TAKEOFF.bukkitSound(), 1.0F, 0.5F);
 				}
 				return;
-				
+			case "checkuuid":
+			case "getuuid":
+			case "uuid":
+			{
+				if (length < 2) return;
+				final Player p = Bukkit.getPlayer(args[1]);
+				if (p == null) {
+					if (UUIDCacher.getInstance().getUUID(args[1].toLowerCase()) == null) {
+						return;
+					}
+					Utility.sendMsg(sender, UUIDCacher.getInstance().getUUID(args[1].toLowerCase()).toString());
+					return;
+				}
+				Utility.sendMsg(sender, p.getUniqueId().toString());
+				return;
+			}
 			case "getitem":
 				if (!isPlayer(sender)) {
 					Utility.sendMsg(sender, "&eYou're not player!");

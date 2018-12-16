@@ -84,7 +84,7 @@ public class SimpleSQL {
 					}
 				}
 			}
-		}.runTaskTimerAsynchronously(DonateCraft.getInstance(), 100L, 100L);
+		}.runTaskTimerAsynchronously(DonateCraft.getInstance(), 12000L, 12000L);
 	}
 	public static SimpleSQL setup(String host, int port, String database, String user, String pass) {
 		if (instance != null) return null;
