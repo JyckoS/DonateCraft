@@ -72,7 +72,9 @@ public final class ACCashBank {
 			accs.put(uuid, new ACWallet(acs));
 			if (acs == 0) continue;
 			addCache(owner, acs);
+			if (!caches.contains(acs)) {
 			caches.add(acs);
+			}
 			if (owners.containsKey(acs)) {
 				ArrayList<String> ownerz = owners.get(acs);
 				ownerz.add(owner);
@@ -107,7 +109,9 @@ public final class ACCashBank {
 			final String owner = yml.getString("cash");
 			if (acs == 0) continue;
 			addCache(owner, acs);
+			if (!caches.contains(acs)) {
 			caches.add(acs);
+			}
 			accs.put(uuid, new ACWallet(acs));
 			if (owners.containsKey(acs)) {
 				ArrayList<String> ownerz = owners.get(acs);

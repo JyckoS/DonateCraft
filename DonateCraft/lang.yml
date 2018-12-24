@@ -1,5 +1,29 @@
 no_permission: "&c&lOops! &7You don't have permission to do that!"
 
+item_bought:
+   action: "CELEBRATE_PURCHASE"
+   sounds:
+     use: true
+     sounds:
+     #<SOUND>-<VOLUME>-<PITCH>
+     - "FIREWORK_TWINKLE-1.0-2.0"
+     - "ENDERDRAGON_DEATH-0.5-2.0"
+   actionbar:
+     use: true
+     message: "&a&lITEM BOUGHT! &7(&c-%COST% &6Cash&7)"
+   titles:
+     use: true
+     title: "&e&lPurchase Successful!"
+     subtitle: "&7Thank you!"
+   messages:
+     use: true
+     message:
+     - "%CENTER%&6&l&m-+-"
+     - "%CENTER%&e&lPurchase Succeed!"
+     - "%CENTER%&7You bought:&r %ITEM%"
+     - "%CENTER%&7Cost:&6 %COST% Cash"
+     - "%CENTER%&aCash Left:&6 %CASH% Cash"
+     - "%CENTER%&6&l&m-+-"
 redeem_success:
 - "%center%&a&lSuccess!"
 - "%center%&7Your cash is now: &e%CASH% &lcash&7!"

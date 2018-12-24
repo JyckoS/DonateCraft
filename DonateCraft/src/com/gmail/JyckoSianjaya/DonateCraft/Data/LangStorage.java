@@ -1,20 +1,29 @@
 package com.gmail.JyckoSianjaya.DonateCraft.Data;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import com.gmail.JyckoSianjaya.DonateCraft.Data.Objects.PackedSound;
 import com.gmail.JyckoSianjaya.DonateCraft.Main.DonateCraft;
+import com.gmail.JyckoSianjaya.DonateCraft.Objects.Action;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
+import com.gmail.JyckoSianjaya.DonateCraft.Utils.XSound;
 
 public final class LangStorage {
 	private static LangStorage instance;
 	private static String MSG_NOPERM;
 	private final HashMap<Message, String> shortmsg = new HashMap<Message, String>();
 	private final HashMap<LongMessage, List<String>> longmsg = new HashMap<LongMessage, List<String>>();
+	private final HashMap<Titles, String[]> titles = new HashMap<Titles, String[]>();
+	private final HashMap<ActionBars, String> actionbars = new HashMap<ActionBars, String>();
+	private final HashMap<Sounds, List<PackedSound>> sounds = new HashMap<Sounds, List<PackedSound>>();
+	private final HashMap<Does, Boolean> does = new HashMap<Does, Boolean>();
 	private List<String> MSG_SUCCESSREDEEM;
 	private List<String> MSG_FAILREDEEM;
 	
@@ -42,7 +51,19 @@ public final class LangStorage {
 	
 	private List<String> NOT_NUMBER;
 	
+	private Action itembought_action;
 	
+	private Boolean use_itembought_messages = false;
+	private List<String> itembought_messages;
+	
+	private Boolean use_itembought_title = false;
+	private String[] itembought_titles = new String[] {"", ""};
+	
+	private Boolean use_itembought_sounds = false;
+	private ArrayList<PackedSound> itembought_sounds = new ArrayList<PackedSound>();
+	
+	private String itembought_actionbar = "";
+	private Boolean use_itembought_actionbar = false;
 	private LangStorage() {
 	}
 	public final static LangStorage getInstance() {
@@ -79,8 +100,37 @@ public final class LangStorage {
 		ConfigurationSection bc = msg.getConfigurationSection("broadcast");
 		DO_BROADCASTREDEEM = bc.getBoolean("broadcast_redeems");
 		BROADCAST_SUCCESSREDEEM = Color(bc.getStringList("message_red"));
-		resetMaps();
+		
+		ConfigurationSection itembought = msg.getConfigurationSection("item_bought");
+		
+		this.use_itembought_sounds = itembought.getBoolean("sounds.use");
+		List<String> ggsounds = itembought.getStringList("sounds.sounds");
+		for (String tr : ggsounds) {
+			String[] things = tr.split("-");
+			Sound sound;
+			try {
+				sound = XSound.requestXSound(things[0]);
+			} catch (IllegalArgumentException e) {
+				Utility.sendConsole("[DC] The sound: " + things[0] + " does not exist!");
+				sound = XSound.BAT_DEATH.bukkitSound();
+			}
+			float volumes = Float.valueOf(things[1]);
+			float pitch = Float.valueOf(things[2]);
+			this.itembought_sounds.add(new PackedSound(sound, volumes, pitch));
+		}
+		this.use_itembought_title = itembought.getBoolean("titles.use");
+		this.itembought_titles[0] = Utility.TransColor(itembought.getString("titles.title"));
+		this.itembought_titles[1] = Utility.TransColor(itembought.getString("titles.subtitle"));
+		
+		this.use_itembought_messages = itembought.getBoolean("messages.use");
+		this.itembought_messages = Color(itembought.getStringList("messages.message"));
+		
+		this.use_itembought_actionbar = itembought.getBoolean("actionbar.use");
+		this.itembought_actionbar = Color(itembought.getString("actionbar.message"));
+		this.itembought_action = ActionStorage.getInstance().getAction(itembought.getString("action"));
+ 		resetMaps();
 	}
+	public Action getItemBought_Action() { return this.itembought_action; }
 	private final void resetMaps() {
 		shortmsg.clear();
 		longmsg.clear();
@@ -104,6 +154,15 @@ public final class LangStorage {
 		shortmsg.put(Message.NOPERM, MSG_NOPERM);
 		shortmsg.put(Message.CTOP_FORMAT, CASH_TOP_FORMAT);
 		shortmsg.put(Message.ACTOP_FORMAT, ACCASH_TOP_FORMAT);
+		does.put(Does.BROADCASTREDEEM, this.DO_BROADCASTREDEEM);
+		does.put(Does.ITEM_BOUGHT_USE_ACTIONBAR, this.use_itembought_actionbar);
+		does.put(Does.ITEM_BOUGHT_USE_MESSAGE, this.use_itembought_messages);
+		does.put(Does.ITEM_BOUGHT_USE_SOUNDS, this.use_itembought_sounds);
+		does.put(Does.ITEM_BOUGHT_USE_TITLES, this.use_itembought_title);
+		this.sounds.put(Sounds.ITEM_BOUGHT_SOUNDS, this.itembought_sounds);
+		longmsg.put(LongMessage.ITEM_BOUGHT_MESSAGE, this.itembought_messages);
+		actionbars.put(ActionBars.ITEM_BOUGHT_ACTIONBAR, this.itembought_actionbar);
+		titles.put(Titles.ITEM_BOUGHT_TITLES, this.itembought_titles);
 	}
 	private final  String Color(final String str) {
 		return Utility.TransColor(str);
@@ -114,16 +173,27 @@ public final class LangStorage {
 	public final String getMessage(final Message msg) {
 		return shortmsg.get(msg);
 	}
+	public final String[] getTitle(final Titles titles) {
+		return this.titles.get(titles);
+	}
+	public final String getActionBar(final ActionBars actionbar) {
+		return this.actionbars.get(actionbar);
+	}
+	public final List<PackedSound> getSound(Sounds sound) { return this.sounds.get(sound); }
 	public final List<String> getMessage(final LongMessage msg) {
 		return longmsg.get(msg);
 	}
 	public final Boolean getDoes(final Does does) {
-		switch (does.toString()) {
-		case "BROADCASTREDEEM":
-			return DO_BROADCASTREDEEM;
-		default:
-			return false;
-		}
+		return this.does.get(does);
+	}
+	public enum Sounds {
+		ITEM_BOUGHT_SOUNDS;
+	}
+	public enum Titles {
+		ITEM_BOUGHT_TITLES;
+	}
+	public enum ActionBars {
+		ITEM_BOUGHT_ACTIONBAR;
 	}
 	public enum Message {
 		NOPERM,
@@ -146,9 +216,14 @@ public final class LangStorage {
 		SHOW_ACASH,
 		SHOW_ACASH_OTHERS,
 		NOT_NUMBER,
+		ITEM_BOUGHT_MESSAGE,
 		REQUIRED_PERM;
 	}
 	public enum Does { 
+		ITEM_BOUGHT_USE_TITLES,
+		ITEM_BOUGHT_USE_ACTIONBAR,
+		ITEM_BOUGHT_USE_SOUNDS,
+		ITEM_BOUGHT_USE_MESSAGE,
 		BROADCASTREDEEM,
 		BROADCASTPURCHASE;
 	}

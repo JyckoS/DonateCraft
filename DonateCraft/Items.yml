@@ -61,6 +61,7 @@ Items:
     - "  "
     - "&6&lCost: &e5000 Cash"
     - "  "
+    DEFAULT_STOCK: 0
     MATERIAL: GOLDEN_CARROT
     BLACKLISTED_PERM: "purchased.rabbit"
     REQUIRED_PERM: "buyperk.rabbit"

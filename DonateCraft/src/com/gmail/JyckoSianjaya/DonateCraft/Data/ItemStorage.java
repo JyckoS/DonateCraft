@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.gmail.JyckoSianjaya.DonateCraft.Main.DonateCraft;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.Action;
+import com.gmail.JyckoSianjaya.DonateCraft.Objects.Stock;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.XMaterial;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.NBT.NBTItem;
@@ -30,6 +31,7 @@ public final class ItemStorage {
 	private ItemStack denyitem = null;
 	private ItemStack denyitem2 = null;
 	private ItemStack denyitem3 = null;
+	private ItemStack itemoutofstock = null;
 	private ItemStorage() {
 		LoadFiles();
 		loadDeny();
@@ -52,6 +54,16 @@ public final class ItemStorage {
 		denymt.setLore(Utility.TransColor(lores));
 		denyitem3 = denyitem2.clone();
 		denyitem3.setItemMeta(denymt);
+		itemoutofstock = new ItemStack(XMaterial.BARRIER.parseItem());
+		final ItemMeta stockmeta = itemoutofstock.getItemMeta();
+		stockmeta.setDisplayName(Utility.TransColor("&c&lWoopsy!"));
+		lores.clear();
+		lores.add("&e&L&m &r &e&l&oOUT OF STOCK &e&l&m ");
+		stockmeta.setLore(Utility.TransColor(lores));
+		itemoutofstock.setItemMeta(stockmeta);
+	}
+	public final ItemStack getStockOutItem() {
+		return itemoutofstock;
 	}
 	public final ItemStack getDenyItem3() {
 		return denyitem3.clone();
@@ -124,6 +136,12 @@ public final class ItemStorage {
 			final 		Action action = act.getAction(aname);
 			final 		String rperm = items.getString(key + ".REQUIRED_PERM");
 			final Double discount = items.getDouble(key + ".DISCOUNT");
+			final int stocks = items.getInt(key + ".DEFAULT_STOCK");
+			if (stocks >= 0) {
+				if (items.contains(key + ".DEFAULT_STOCK")) {
+					DataStorage.getInstance().setStock(key, new Stock(stocks));
+				}
+			}
 			if (discount != null && discount > 0 || config.getDouble("current_discount") > 0) {
 				itemlore = TransColor(items.getStringList(key + ".ITEM_LORE_DISCOUNT"));
 				ArrayList<String> secondlo = new ArrayList<String>();
@@ -183,11 +201,10 @@ public final class ItemStorage {
 			}
 			}
 			else {
-				List<String> newlos = new ArrayList<String>();
 				if (discount == null || discount <= 0) {
 					if (!added) {
 					for (String str : pricing_lore_normal) {
-						newlos.add(str.replaceAll("%price%", price + ""));
+						itemlore.add(str.replaceAll("%price%", price + ""));
 					}
 					added = true;
 					}
@@ -195,15 +212,14 @@ public final class ItemStorage {
 				else if (discount != null && discount > 0) {
 					if (!added) {
 					for (String str : pricing_lore_discount) {
-						newlos.add(str.replaceAll("%price%", price + "").replaceAll("%final%", (int) (price - price * discount / 100) + ""));
+						itemlore.add(str.replaceAll("%price%", price + "").replaceAll("%final%", (int) (price - price * discount / 100) + ""));
 					}
 					added = true;
 					}
 				}
 				for (String str : itemlore) {
-					newlos.add(str);
+					itemlore.add(str);
 				}
-				itemlore = new ArrayList<String>(newlos);
 			}
 			}
 			}
@@ -216,6 +232,7 @@ public final class ItemStorage {
 			if (discount != null && discount > 0) {
 			nitem.setDouble("DCDiscount", discount);
 			}
+			nitem.setString("DCItemKey", key);
 			nitem.setString("DCAction", aname);
 			nitem.setInteger("DCCost", price);
 			nitem.setString("BLISTPERM", bperm);

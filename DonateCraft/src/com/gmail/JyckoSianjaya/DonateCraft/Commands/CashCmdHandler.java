@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 
 import com.gmail.JyckoSianjaya.DonateCraft.Data.ACCashBank;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.CashBank;
+import com.gmail.JyckoSianjaya.DonateCraft.Data.DataStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.PlayerData;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage.LongMessage;
@@ -217,7 +218,12 @@ public final class CashCmdHandler {
 				@Override
 				public void runTask() {
 					// TODO Auto-generated method stub
+					if (!DataStorage.getInstance().useSQL()) {
 					PlayerData.getInstance().setData(uu);
+					return;
+					}
+					PlayerData.getInstance().saveData(PlayerData.getInstance().getSQLData(p.getUniqueId()));
+					return;
 				}
 				@Override
 				public void reduceTicks() {
@@ -282,7 +288,10 @@ public final class CashCmdHandler {
 				@Override
 				public void runTask() {
 					// TODO Auto-generated method stub
+					if (!DataStorage.getInstance().useSQL()) {
 					PlayerData.getInstance().setData(uu);
+					return; }
+					PlayerData.getInstance().saveData(PlayerData.getInstance().getSQLData(UUID.fromString(uud)));
 				}
 				@Override
 				public void reduceTicks() {
@@ -307,8 +316,10 @@ public final class CashCmdHandler {
 				@Override
 				public void runTask() {
 					// TODO Auto-generated method stub
-					PlayerData.getInstance().setData(uu);
-				}
+					if (!DataStorage.getInstance().useSQL()) {
+						PlayerData.getInstance().setData(uu);
+						return; }
+						PlayerData.getInstance().saveData(PlayerData.getInstance().getSQLData(UUID.fromString(uud)));				}
 				@Override
 				public void reduceTicks() {
 					// TODO Auto-generated method stub
@@ -363,7 +374,9 @@ public final class CashCmdHandler {
 				@Override
 				public void runTask() {
 					// TODO Auto-generated method stub
+					if (!DataStorage.getInstance().useSQL())
 					PlayerData.getInstance().setData(uu);
+					PlayerData.getInstance().saveData(PlayerData.getInstance().getSQLData(UUID.fromString(uud)));
 				}
 				@Override
 				public void reduceTicks() {
@@ -392,8 +405,10 @@ public final class CashCmdHandler {
 				@Override
 				public void runTask() {
 					// TODO Auto-generated method stub
-					PlayerData.getInstance().setData(uu);
-				}
+					if (!DataStorage.getInstance().useSQL()) {
+						PlayerData.getInstance().setData(uu);
+						return; }
+						PlayerData.getInstance().saveData(PlayerData.getInstance().getSQLData(UUID.fromString(uud)));				}
 				@Override
 				public void reduceTicks() {
 					// TODO Auto-generated method stub
@@ -426,6 +441,9 @@ public final class CashCmdHandler {
 			Cash cashe = null;
 			if (cashb.hasCash(ruuid)) {
 			cashe = cashb.getCash(ruuid);
+			}
+			if (DataStorage.getInstance().useSQL()) {
+				cashe = PlayerData.getInstance().getCash(ruuid);
 			}
 			String name = args[0];
 			if (play != null) name = play.getName();

@@ -1,9 +1,15 @@
 package com.gmail.JyckoSianjaya.DonateCraft.Events;
 
+import java.io.File;
 import java.io.IOException;
-
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.UUID;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.file.YamlConfigurationOptions;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
@@ -20,7 +26,14 @@ import com.gmail.JyckoSianjaya.DonateCraft.Data.DataStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.ItemStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.PlayerData;
+import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage.ActionBars;
+import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage.Does;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage.LongMessage;
+import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage.Sounds;
+import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage.Titles;
+import com.gmail.JyckoSianjaya.DonateCraft.Data.Objects.PackedSound;
+import com.gmail.JyckoSianjaya.DonateCraft.Database.SimpleSQL;
+import com.gmail.JyckoSianjaya.DonateCraft.Main.DonateCraft;
 import com.gmail.JyckoSianjaya.DonateCraft.Manager.ConfirmationManager;
 import com.gmail.JyckoSianjaya.DonateCraft.Manager.DCRunnable;
 import com.gmail.JyckoSianjaya.DonateCraft.Manager.DCTask;
@@ -28,6 +41,7 @@ import com.gmail.JyckoSianjaya.DonateCraft.Objects.Action;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.Cash;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.ConfirmationHolder;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.DCHolder;
+import com.gmail.JyckoSianjaya.DonateCraft.Objects.Stock;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.UUIDCacher;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.XSound;
@@ -92,6 +106,39 @@ public final class DCEventHandler {
 			 if (akey == null) {
 				 return;
 			 }
+			 Stock stock = DataStorage.getInstance().getStock(titem.getString("DCItemKey"));
+			 if (stock != null) {
+				 int amount = stock.getAmount();
+				 if (amount <= 0) {
+				 Utility.PlaySound(p, XSound.VILLAGER_NO.bukkitSound(), 0.4F, 0.65F);
+				 final int clicked = e.getSlot();
+				 final Inventory inv = e.getClickedInventory();
+				 inv.setItem(clicked, ItemStorage.getInstance().getStockOutItem());
+				 DCRunnable.getInstance().addTask(new DCTask() {
+					 int liveticks = 40;
+					@Override
+					public final void runTask() {
+						// TODO Auto-generated method stub
+						if (liveticks > 1) return;
+						inv.setItem(clicked, item);
+					}
+
+					@Override
+					public final void reduceTicks() {
+						// TODO Auto-generated method stub
+						liveticks--;
+					}
+
+					@Override
+					public final int getLiveTicks() {
+						// TODO Auto-generated method stub
+						return liveticks;
+					}
+				 });
+				 return;
+				 }
+				 stock.reduceAmount();
+			 }
 			 int cost = 0;
 			 cost = titem.getInteger("DCCost");
 			 Double disc = ds.getDiscount();
@@ -126,6 +173,41 @@ public final class DCEventHandler {
 			 final Action action = actions.getAction(akey);
 			 action.applyCommand(p);
 			 e.setCancelled(true); 
+			 if (ls.getDoes(Does.ITEM_BOUGHT_USE_ACTIONBAR)) {
+				 String str = ls.getActionBar(ActionBars.ITEM_BOUGHT_ACTIONBAR);
+				 str = str.replaceAll("%ITEM%", titem.getName());
+				 str = str.replaceAll("%p", p.getName());
+				 str = str.replaceAll("%CASH%", cash.getCashAmount() + "");
+				 str = str.replaceAll("%COST%", cost + "");
+				 Utility.sendActionBar(p, ls.getActionBar(ActionBars.ITEM_BOUGHT_ACTIONBAR));
+			 }
+			 if (ls.getDoes(Does.ITEM_BOUGHT_USE_MESSAGE)) {
+				 for (String str : ls.getMessage(LongMessage.ITEM_BOUGHT_MESSAGE)) {
+					 str = str.replaceAll("%ITEM%", titem.getName());
+					 str = str.replaceAll("%p", p.getName());
+					 str = str.replaceAll("%CASH%", cash.getCashAmount() + "");
+					 str = str.replaceAll("%COST%", cost + "");
+				 }
+			 }
+			 if (ls.getDoes(Does.ITEM_BOUGHT_USE_SOUNDS)) {
+				 for (PackedSound sound : ls.getSound(Sounds.ITEM_BOUGHT_SOUNDS)) {
+					 Utility.PlaySound(p, sound.getSound(), sound.getVolume(), sound.getPitch());
+				 }
+			 }
+			 if (ls.getDoes(Does.ITEM_BOUGHT_USE_TITLES)) {
+				 String[] msg = ls.getTitle(Titles.ITEM_BOUGHT_TITLES);
+				 for (int i = 0; i < msg.length; i++) {
+					 String str = msg[i];
+					 str = str.replaceAll("%ITEM%", titem.getName());
+					 str = str.replaceAll("%p", p.getName());
+					 str = str.replaceAll("%CASH%", cash.getCashAmount() + "");
+					 str = str.replaceAll("%COST%", cost + "");
+					 msg[i] = str;
+				}
+ 				 Utility.sendTitle(p, 10, 30, 10, ls.getTitle(Titles.ITEM_BOUGHT_TITLES)[0], ls.getTitle(Titles.ITEM_BOUGHT_TITLES)[1]);
+			 }
+			 Action act = ls.getItemBought_Action();
+			 act.applyCommand(p);
 			 return;
 		 case "no":
 			 final String dkey = rritem.getString("CCAction");
@@ -212,6 +294,39 @@ public final class DCEventHandler {
 		 }
 		 }
 		 final String bperm = rritem.getString("BLISTPERM");
+		 Stock stock = DataStorage.getInstance().getStock(rritem.getString("DCItemKey"));
+		 if (stock != null) {
+			 int amount = stock.getAmount();
+			 if (amount <= 0) {
+			 Utility.PlaySound(p, XSound.VILLAGER_NO.bukkitSound(), 0.4F, 0.65F);
+			 final int clicked = e.getSlot();
+			 final Inventory inv = e.getClickedInventory();
+			 inv.setItem(clicked, ItemStorage.getInstance().getStockOutItem());
+			 DCRunnable.getInstance().addTask(new DCTask() {
+				 int liveticks = 40;
+				@Override
+				public final void runTask() {
+					// TODO Auto-generated method stub
+					if (liveticks > 1) return;
+					inv.setItem(clicked, item);
+				}
+
+				@Override
+				public final void reduceTicks() {
+					// TODO Auto-generated method stub
+					liveticks--;
+				}
+
+				@Override
+				public final int getLiveTicks() {
+					// TODO Auto-generated method stub
+					return liveticks;
+				}
+			 });
+			 return;
+			 }
+
+		 }
 		 if (!bperm.toUpperCase().equals("NONE")) {
 		 if (!p.hasPermission("donatecraft.staff") && p.hasPermission(bperm)) {
 			 Utility.PlaySound(p, XSound.VILLAGER_NO.bukkitSound(), 0.4F, 0.65F);
@@ -303,18 +418,113 @@ public final class DCEventHandler {
 		 e.setCancelled(true);
 		 }
 	}
+	public final void onFirstJoin(final PlayerJoinEvent e) {
+		Player p = e.getPlayer();
+		UUID uuid = p.getUniqueId();
+		
+	}
 	public final void ManagePlayerJoin(final PlayerJoinEvent e) {
+		if (!this.ds.useSQL()) {
 		final Player p = e.getPlayer();
 		final Cash cash = pd.getCash(p);
 		UUIDCacher.getInstance().setUUID(e.getPlayer().getName(), e.getPlayer().getUniqueId());
+		return;
+		}
+		DCRunnable.getInstance().addTask(new DCTask() {
+			int health = 1;
+			@Override
+			public void runTask() {
+		SimpleSQL sql = SimpleSQL.getInstance();
+		String uuid = e.getPlayer().getUniqueId().toString();
+		YamlConfiguration yml = YamlConfiguration.loadConfiguration(new File(DonateCraft.getInstance().getDataFolder(), "DummyData.yml"));
+		ResultSet resultset = sql.getResult("SELECT data FROM DCPlayerData WHERE uuid='" + uuid + "';");
+		try {
+			if (!resultset.next()) {
+				sql.getResult("INSERT OR IGNORE INTO DCPlayerData (uuid, data) VALUES ('" + uuid + "', " + "'" + yml + "');");
+
+			}
+		} catch (SQLException e3) {
+			// TODO Auto-generated catch block
+			e3.printStackTrace();
+		}
+		if (!sql.hasRecord(uuid)) return;
+		resultset = sql.getResult("SELECT data FROM DCPlayerData WHERE uuid='" + uuid + "';");
+		String data = "";
+		try {
+			data = resultset.getString("data");
+		} catch (SQLException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		try {
+			yml.loadFromString(data);
+		} catch (InvalidConfigurationException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		if (resultset == null) return;
+		try {
+			if (resultset.wasNull()) return;
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		PlayerData.getInstance().loadData(yml);
+		}
+
+			@Override
+			public void reduceTicks() {
+				// TODO Auto-generated method stub
+				health--;
+			}
+
+			@Override
+			public int getLiveTicks() {
+				// TODO Auto-generated method stub
+				return health;
+			}
+		});
 	}
 	public final void ManagePlayerQuit(final PlayerQuitEvent e) {
+		if (!this.ds.useSQL()) {
 		final Player p = e.getPlayer();
 		final Cash cash = bank.getCash(p);
 		if (cash == null) {
 			return;
 		}
 		pd.setData(p, cash);
+		return;
+		}
+		if (bank.getCash(e.getPlayer()) == null) return;
+		DCRunnable.getInstance().addTask(new DCTask() {
+			int health = 1;
+			@Override
+			public void runTask() {
+		SimpleSQL sql = SimpleSQL.getInstance();
+		String uuid = e.getPlayer().getUniqueId().toString();
+		YamlConfiguration yml = PlayerData.getInstance().getData(e.getPlayer().getUniqueId());
+		ResultSet resultset = sql.getResult("INSERT OR IGNORE INTO DCPlayerData (uuid, data) VALUES ('" + uuid + "', " + "'" + yml.toString() + "');");
+		sql.getResult("UPDATE DCPlayerData SET data='" + yml.toString() + "' WHERE uuid='" + uuid + "';");
+		if (resultset == null) return;
+		try {
+			if (resultset.wasNull()) return;
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		}
 
+			@Override
+			public void reduceTicks() {
+				// TODO Auto-generated method stub
+				health--;
+			}
+
+			@Override
+			public int getLiveTicks() {
+				// TODO Auto-generated method stub
+				return health;
+			}
+		});
 	}
 }

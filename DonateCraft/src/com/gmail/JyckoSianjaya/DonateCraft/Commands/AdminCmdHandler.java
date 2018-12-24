@@ -35,6 +35,7 @@ import com.gmail.JyckoSianjaya.DonateCraft.Data.RedeemStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.Action;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.Cash;
 import com.gmail.JyckoSianjaya.DonateCraft.Objects.RedeemCode;
+import com.gmail.JyckoSianjaya.DonateCraft.Objects.Stock;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.UUIDCacher;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 import com.gmail.JyckoSianjaya.DonateCraft.Utils.XSound;
@@ -167,6 +168,28 @@ public final class AdminCmdHandler {
 					Utility.PlaySound((Player) sender, XSound.BAT_TAKEOFF.bukkitSound(), 1.0F, 0.5F);
 				}
 				return;
+			case "setstock":
+			{
+			if (length < 3) {
+				Utility.sendMsg(sender, "&c| &7/dc setstock <ITEM> <AMOUNT>");
+				return;
+			}
+			String item = args[1];
+			if (ItemStorage.getInstance().getItem(item) == null) {
+				Utility.sendMsg(sender, "&c| &7OOPS! &fThat item doesn't exist!");
+				return;
+			}
+			int amount = 0;
+			try {
+				amount = Integer.parseInt(args[2]);
+			} catch (NumberFormatException e) {
+				Utility.sendMsg(sender, "&c| &7OOPS! &fThat's not a number!");
+				return;
+			}
+			DataStorage.getInstance().setStock(item, new Stock(amount));
+			Utility.sendMsg(sender, "&a&l ! &7Successfully changed the stock for &f" + item + "&7 into &e&l" + amount);
+			return;
+			}
 			case "checkuuid":
 			case "getuuid":
 			case "uuid":

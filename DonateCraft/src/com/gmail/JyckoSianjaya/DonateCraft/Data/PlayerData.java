@@ -2,12 +2,15 @@ package com.gmail.JyckoSianjaya.DonateCraft.Data;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import com.gmail.JyckoSianjaya.DonateCraft.Database.SimpleSQL;
 import com.gmail.JyckoSianjaya.DonateCraft.Main.DonateCraft;
 import com.gmail.JyckoSianjaya.DonateCraft.Manager.DCRunnable;
 import com.gmail.JyckoSianjaya.DonateCraft.Manager.DCTask;
@@ -67,6 +70,111 @@ public final class PlayerData {
 				return health;
 			}
 	});
+	}
+	public final YamlConfiguration getData(final UUID p) {
+		File f = new File(MainInst.getDataFolder(), "playerdata" + File.separator +  p + ".yml");
+		if (!f.exists())
+			try {
+				f.createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		f = new File(MainInst.getDataFolder(), "playerdata" + File.separator +  p + ".yml");
+		final YamlConfiguration file = YamlConfiguration.loadConfiguration(f);
+		Cash cash = new Cash(0);
+		if (CashBank.getInstance().getCash(p) != null) {
+			cash = CashBank.getInstance().getCash(p);
+		}
+		file.set("cash", cash.getCashAmount());
+		file.set("uuid", p.toString());
+		String name = null;
+		if (Bukkit.getPlayer(p) != null) {
+			name = Bukkit.getPlayer(p).getName();
+		}
+		if (Bukkit.getOfflinePlayer(p) != null) {
+			name = Bukkit.getOfflinePlayer(p).getName();
+		}
+		if (name == null) {
+			name = UUIDCacher.getInstance().getNick(p);
+		}
+		file.set("nick", name);
+	    ACWallet accw = new ACWallet(0);
+		if (acbank.getACWallet(p) != null) {
+			accw = acbank.getACWallet(p);
+		}
+		if (accw.getAmount() <=0 && cash.getCashAmount() <= 0) return null;
+		file.set("ac-cash", accw.getAmount());
+		f.delete();
+		return file;
+	}
+	public final void loadData(final YamlConfiguration yml) {
+		Cash cash = new Cash(0);
+		UUID p = UUID.fromString(yml.getString("uuid"));
+		if (CashBank.getInstance().getCash(p) != null) {
+			cash = CashBank.getInstance().getCash(p);
+		}
+		cash.setCash(yml.getInt("cash"));
+
+	    ACWallet accw = new ACWallet(0);
+		if (acbank.getACWallet(p) != null) {
+			accw = acbank.getACWallet(p);
+		}
+		accw.setAmount(yml.getInt("ac-cash"));
+		CashBank.getInstance().setCash(p, cash);
+		ACCashBank.getInstance().setACWallet(p, accw);
+	}
+	public final ACWallet getSQLACCash(final UUID p) {
+		final YamlConfiguration yml = this.getSQLData(p);
+		int cash = yml.getInt("ac-cash");
+		return new ACWallet(cash);
+	}
+	public final Cash getSQLCash(final UUID p) {
+		final YamlConfiguration yml = this.getSQLData(p);
+		int cash = yml.getInt("cash");
+		return new Cash(cash);
+	}
+	public final YamlConfiguration getSQLData(final UUID p) {
+		File f = new File(DonateCraft.getInstance().getDataFolder(), "Actions.yml");
+		YamlConfiguration yml = YamlConfiguration.loadConfiguration(f);
+		try {
+			yml.loadFromString(SimpleSQL.getInstance().getResult("SELECT data FROM DCPlayerData WHERE uuid='" + p.toString() + "';").getString("data"));
+		} catch (InvalidConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return yml;
+	}
+	public final void saveData(final YamlConfiguration yml) {
+		Cash cash = new Cash(0);
+		UUID p = UUID.fromString(yml.getString("uuid"));
+		if (CashBank.getInstance().getCash(p) != null) {
+			cash = CashBank.getInstance().getCash(p);
+		}
+		yml.set("cash", cash.getCashAmount());
+		yml.set("uuid", p.toString());
+		String name = null;
+		if (Bukkit.getPlayer(p) != null) {
+			name = Bukkit.getPlayer(p).getName();
+		}
+		if (Bukkit.getOfflinePlayer(p) != null) {
+			name = Bukkit.getOfflinePlayer(p).getName();
+		}
+		if (name == null) {
+			name = UUIDCacher.getInstance().getNick(p);
+		}
+		yml.set("nick", name);
+	    ACWallet accw = new ACWallet(0);
+		if (acbank.getACWallet(p) != null) {
+			accw = acbank.getACWallet(p);
+		}
+		if (accw.getAmount() <=0 && cash.getCashAmount() <= 0) return;
+		yml.set("ac-cash", accw.getAmount());
+
+		SimpleSQL.getInstance().getResult("UPDATE DCPlayerData SET data='" + yml.toString() + "' WHERE uuid='" + p.toString() +"';");
 	}
 	public final void setData(final UUID p) {
 		final File f = new File(MainInst.getDataFolder(), "playerdata" + File.separator +  p + ".yml");
@@ -150,7 +258,7 @@ public final class PlayerData {
 			}
 			*/
 		}
-		if (cbank.getCash(uu) == null) {
+		if (cbank.getOriginalCash(uu) == null) {
 			final int cash = pyml.getInt("cash");
 			cash2 = new Cash(cash);
 			cbank.setCash(uuid, cash2);
@@ -181,7 +289,7 @@ public final class PlayerData {
 			}
 			*/
 		}
-		if (cbank.getCash(uu) == null) {
+		if (cbank.getOriginalCash(uu) == null) {
 			final int cash = pyml.getInt("cash");
 			cash2 = new Cash(cash);
 			cbank.setCash(p, cash2);

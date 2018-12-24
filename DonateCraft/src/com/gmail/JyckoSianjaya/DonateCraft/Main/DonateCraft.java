@@ -27,6 +27,7 @@ import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.NumberStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.PlayerData;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.RedeemStorage;
+import com.gmail.JyckoSianjaya.DonateCraft.Database.SimpleSQL;
 import com.gmail.JyckoSianjaya.DonateCraft.Events.DCEventHandler;
 import com.gmail.JyckoSianjaya.DonateCraft.Events.DCEvents;
 import com.gmail.JyckoSianjaya.DonateCraft.Manager.ConfirmationManager;
@@ -88,6 +89,7 @@ public final class DonateCraft extends JavaPlugin {
 		saveAllCash();
 		saveAllcode();
 		cach.saveData();
+		SimpleSQL.getInstance().onDisable();
 	}
 	private final void registerMetrics() {
 		Metrics metrics = new Metrics(this);
@@ -130,7 +132,7 @@ public final class DonateCraft extends JavaPlugin {
 	}
 	private final void saveAllcode() {
 		final RedeemStorage storage = RedeemStorage.getInstance();
-		final File file = new File(this.getDataFolder(), "Redeems.yml");
+		File file = new File(this.getDataFolder(), "Redeems.yml");
 		file.delete();
 		try {
 			file.createNewFile();
@@ -138,6 +140,7 @@ public final class DonateCraft extends JavaPlugin {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		file = new File(this.getDataFolder(), "Redeems.yml");
 		final YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
 		yaml.createSection("redeems");
 		final ConfigurationSection redeems = yaml.getConfigurationSection("redeems");
@@ -263,6 +266,7 @@ public final class DonateCraft extends JavaPlugin {
 		final File instructions = new File(this.getDataFolder(), "Instructions.txt");
 		this.saveResource("Instructions.txt", true);
 		this.saveResource("Changelogs.txt", true);
+		this.saveResource("DummyData.yml", true);
 	}
 	private void LoadConfig() {
 		final FileConfiguration config = this.getConfig();

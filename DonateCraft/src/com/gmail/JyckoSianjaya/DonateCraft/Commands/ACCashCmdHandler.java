@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.gmail.JyckoSianjaya.DonateCraft.Data.ACCashBank;
+import com.gmail.JyckoSianjaya.DonateCraft.Data.DataStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.PlayerData;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage.LongMessage;
@@ -176,7 +177,10 @@ public final class ACCashCmdHandler {
 					@Override
 					public void runTask() {
 						// TODO Auto-generated method stub
-						PlayerData.getInstance().setData(uu);
+						if (!DataStorage.getInstance().useSQL()) {
+							PlayerData.getInstance().setData(uu);
+							return; }
+							PlayerData.getInstance().saveData(PlayerData.getInstance().getSQLData(UUID.fromString(uud)));
 					}
 					@Override
 					public void reduceTicks() {
@@ -261,8 +265,10 @@ public final class ACCashCmdHandler {
 					@Override
 					public void runTask() {
 						// TODO Auto-generated method stub
-						PlayerData.getInstance().setData(uu);
-					}
+						if (!DataStorage.getInstance().useSQL()) {
+							PlayerData.getInstance().setData(uu);
+							return; }
+							PlayerData.getInstance().saveData(PlayerData.getInstance().getSQLData(UUID.fromString(uud)));				}
 					@Override
 					public void reduceTicks() {
 						// TODO Auto-generated method stub
@@ -346,8 +352,10 @@ public final class ACCashCmdHandler {
 					@Override
 					public void runTask() {
 						// TODO Auto-generated method stub
-						PlayerData.getInstance().setData(uu);
-					}
+						if (!DataStorage.getInstance().useSQL()) {
+							PlayerData.getInstance().setData(uu);
+							return; }
+							PlayerData.getInstance().saveData(PlayerData.getInstance().getSQLData(UUID.fromString(uud)));			}
 					@Override
 					public void reduceTicks() {
 						// TODO Auto-generated method stub
@@ -370,7 +378,10 @@ public final class ACCashCmdHandler {
 				@Override
 				public void runTask() {
 					// TODO Auto-generated method stub
-					PlayerData.getInstance().setData(uu);
+					if (!DataStorage.getInstance().useSQL()) {
+						PlayerData.getInstance().setData(uu);
+						return; }
+						PlayerData.getInstance().saveData(PlayerData.getInstance().getSQLData(UUID.fromString(uud)));
 				}
 				@Override
 				public void reduceTicks() {
@@ -419,6 +430,10 @@ public final class ACCashCmdHandler {
 			int money = 0;
 			if (acb.hasWallet(target)) {
 				ppwallet = acb.getACWallet(target);
+				money = ppwallet.getAmount();
+			}
+			if (DataStorage.getInstance().useSQL()) {
+				ppwallet = PlayerData.getInstance().getSQLACCash(target);
 				money = ppwallet.getAmount();
 			}
 			for (String cms : ls.getMessage(LongMessage.SHOW_ACASH_OTHERS)) {

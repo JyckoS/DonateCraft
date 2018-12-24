@@ -55,6 +55,9 @@ public class CashBank {
 		}
 		return null;
 	}
+	public final Cash getOriginalCash(final UUID uuid) {
+		return Cashes.get(uuid);
+	}
 	public final Set<UUID> getKeys() { return Cashes.keySet(); }
 	public final void setCash(final Player p, final Cash cash) {
 		Cashes.put(p.getUniqueId(), cash);
@@ -98,7 +101,9 @@ public class CashBank {
 			final String owner = yml.getString("nick");
 			this.setCash(uuid, new Cash(acs));
 			if (acs == 0) continue;
+			if (!caches.contains(acs)) {
 			caches.add(acs);
+			}
 			if (owners.containsKey(acs)) {
 				ArrayList<String> ownerz = owners.get(acs);
 				ownerz.add(owner);
@@ -143,7 +148,9 @@ public class CashBank {
 			if (acs == 0) continue;
 			this.setCash(uuid, new Cash(acs));
 			addCache(owner, acs);
+			if (!caches.contains(acs)) {
 			caches.add(acs);
+			}
 			if (owners.containsKey(acs)) {
 				ArrayList<String> ownerz = owners.get(acs);
 				ownerz.add(owner);
