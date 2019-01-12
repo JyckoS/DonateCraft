@@ -4,6 +4,8 @@ import java.io.File;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -29,6 +31,7 @@ import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.NumberStorage;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.RandomResult;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.LangStorage.Message;
+import com.gmail.JyckoSianjaya.DonateCraft.Database.SimpleSQL;
 import com.gmail.JyckoSianjaya.DonateCraft.Main.DonateCraft;
 import com.gmail.JyckoSianjaya.DonateCraft.Manager.ConfirmationManager;
 import com.gmail.JyckoSianjaya.DonateCraft.Data.RedeemStorage;
@@ -58,7 +61,7 @@ public final class AdminCmdHandler {
 	public final void ManageAdminCmd(final CommandSender sender, final Command cmd, final String[] args) {
 		if (!sender.hasPermission("donatecraft.admin")) {
 			Utility.sendMsg(sender, " ");
-			Utility.sendMsg(sender, " &7Running  &6&lDonate&e&lCraft &8&lV.&8" + minstance.getDescription().getVersion());
+			Utility.sendMsg(sender, "   &7Running  &6&lDonate&e&lCraft &8&lV.&8" + minstance.getDescription().getVersion());
 			Utility.sendMsg(sender, "    &7Made by &f&oJicko Sianjaya &7(Gober)");
 			Utility.sendMsg(sender, " ");
 			return;
@@ -129,17 +132,41 @@ public final class AdminCmdHandler {
 				return;
 			}
 			}
+		case "force":
+		case "forceaction": {
+			if (args.length < 3) {
+				Utility.sendMsg(sender, "&cOops! &7Use /dc force <PLAYER> <ACTION>");
+				return;
+			}
+			Player p = null;
+			if (Bukkit.getPlayer(args[1]) == null) {
+				Utility.sendMsg(sender, "&cOops! &7That person doesn't exist!");
+				return;
+			}
+			String action = args[2];
+			if (ActionStorage.getInstance().getAction(action) == null) {
+				Utility.sendMsg(sender, "&cOops! &7That action doesn't exist!");
+				return;
+			}
+			p = Bukkit.getPlayer(args[1]);
+			Action saction = astorage.getAction(action);
+			saction.applyCommand(p);
+			Utility.sendMsg(sender, "&aSuccess! &7The action &f" + action + " &7applied to " + p.getName());
+			return;
+		}
 		case "help":
 			Utility.sendMsg(sender, "             &6&l&nDonate&e&l&nCraft&r        ");
 			Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &7open &f<GUINAME>");
 			Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &7createcode &f<CODE> &7or &dRANDOM");
 			Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &7actions &F<Action>");
 			Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &7removecode <CODE>");
+			Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &7setstock&f <ITEM> <AMOUNT>");
 			Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &7getItem &f<KEY>");
 			Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &7list &fACTION&7, &fCODE&7, &fGUI&7, &fITEMS");
 			Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &7discount <PERCENTAGE>");
 			Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &4reload ");
 			Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &aupdates");
+			Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &cforceaction <PLAYER> <ACTION>");
 			Utility.sendMsg(sender, "    &a&l&m&a&l>  &2/acash &7or &e/cash &atop <POINT>");
 			Utility.sendMsg(sender, "    &a&l&m&a&l>  &2/acash &7or &e/cash &aADD&f/&aREMOVE&f/&aSET <PLAYER> <AMOUNT>");
 			Utility.sendMsg(sender, "    &a&l&m&a&l>  &2/acash &7or &e/cash &a<PLAYER>");
@@ -154,11 +181,14 @@ public final class AdminCmdHandler {
 				Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &7createcode &f<CODE> &7or &dRANDOM");
 				Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &7actions &f<Action>");
 				Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &7removecode <CODE>");
+				Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &7setstock&f <ITEM> <AMOUNT>");
+
 				Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &7getItem &f<KEY>");
 				Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &7list &fACTION&7, &fCODE&7, &fGUI&7, &fITEMS");
 				Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &7discount <PERCENTAGE>");
 				Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &4reload");
 				Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &aupdates");
+				Utility.sendMsg(sender, "    &e&l&m&e&l>  &6/dc &cforceaction <PLAYER> <ACTION>");
 
 				Utility.sendMsg(sender, "    &a&l&m&a&l>  &2/acash &7or &e/cash &atop <POINT>");
 				Utility.sendMsg(sender, "    &a&l&m&a&l>  &2/acash &7or &e/cash &aADD&f/&aREMOVE&f/&aSET <PLAYER> <AMOUNT>");
@@ -168,6 +198,46 @@ public final class AdminCmdHandler {
 					Utility.PlaySound((Player) sender, XSound.BAT_TAKEOFF.bukkitSound(), 1.0F, 0.5F);
 				}
 				return;
+			case "executesqlupdate": {
+				if (length < 2) {
+					return;
+				}
+				String todo = "";
+				for (int i = 1; i < args.length; i++) {
+					if (i >= args.length) {
+						todo = todo + args[i];
+						break;
+					}
+					todo = todo + args[i] + " ";
+				}
+				Utility.sendMsg(sender, "&7EXECUTED: '" + todo + "'");
+				SimpleSQL.getInstance().getUpdate(todo);
+				return;}
+			case "executesqlquery": {
+				if (length < 2) {
+					return;
+				}
+				String todo = "";
+				for (int i = 1; i < args.length; i++) {
+					if ((i - 1) >= args.length) {
+						todo = todo + args[i];
+						break;
+					}
+					todo = todo + args[i] + " ";
+				}
+				Utility.sendMsg(sender, "&7EXECUTED: '" + todo + "'");
+				ResultSet set = SimpleSQL.getInstance().getResult(todo);
+				Utility.sendMsg(sender, "&7Result:");
+				try {
+					while (set.next()) {
+					Utility.sendMsg(sender, set.getString("data"));
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return;
+			}
 			case "setstock":
 			{
 			if (length < 3) {

@@ -68,6 +68,7 @@ public class CashBank {
 	public final void LoadFiles() {
 		final File folder = new File(DonateCraft.getInstance().getDataFolder(), "playerdata" + File.separator);
 		final File[] cashfiles = folder.listFiles();
+		if (DataStorage.getInstance().useSQL()) return;
 		for (final File file : cashfiles) {
 			final String name = file.getName().replaceAll(".yml", "");
 			final UUID uuid = UUID.fromString(name);
@@ -78,7 +79,11 @@ public class CashBank {
 			setCash(uuid, cas);
 		}
 	}
+	public final void removeCash(UUID uuid) {
+		this.Cashes.remove(uuid);
+	}
 	public final void resetCashTopBalance() {
+		if (DataStorage.getInstance().useSQL()) return;
 		for (final Player p : Bukkit.getOnlinePlayers()) {
 			if (getCash(p) == null) {
 				continue;
@@ -124,6 +129,7 @@ public class CashBank {
 		}
 	}
 	public final void resetCashBalance() {
+		if (DataStorage.getInstance().useSQL()) return;
 		for (final Player p : Bukkit.getOnlinePlayers()) {
 			if (getCash(p) == null) {
 				continue;

@@ -3,6 +3,7 @@ package com.gmail.JyckoSianjaya.DonateCraft.Data;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -19,9 +20,16 @@ import com.gmail.JyckoSianjaya.DonateCraft.Utils.Utility;
 public final class RedeemStorage {
 	private static RedeemStorage instance;
 	private final ArrayList<RedeemCode> Redeemcodes = new ArrayList<RedeemCode>();
+	private HashMap<String, RedeemCode> redeemkeys = new HashMap<String, RedeemCode>();
 	private YamlConfiguration yaml;
 	private RedeemStorage() {
 	}
+	/*
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
 	public final void LoadRedeemFile() {
 		final File file = new File(DonateCraft.getInstance().getDataFolder(), "Redeems.yml");
 		final YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
@@ -41,31 +49,26 @@ public final class RedeemStorage {
 		}
 		return instance;
 	}
+	public final void removeCode(String key) {
+		Redeemcodes.remove(redeemkeys.get(key));
+		this.redeemkeys.remove(key);
+	}
 	public final void addCode(final RedeemCode code) {
+		redeemkeys.put(code.getCode(), code);
 		this.Redeemcodes.add(code);
 	}
 	public final void removeCode(final RedeemCode code) {
+		redeemkeys.remove(code.getCode());
 		this.Redeemcodes.remove(code);
 	}
 	public final void clearCodes() {
 		this.Redeemcodes.clear();
 	}
 	public final RedeemCode getRedeemCode(final String code){
-		for (RedeemCode ecode : Redeemcodes) {
-			if (ecode.getCode().equals(code)) {
-				return ecode;
-			}
-	    }
-		return null;
+		return redeemkeys.get(code);
 	}
 	public final boolean hasCode(final String code) {
-		for (final RedeemCode ecode : Redeemcodes) {
-			if (ecode.getCode().equals(code)) {
-				return true;
-			}
-			continue;
-		}
-		return false;
+		return redeemkeys.containsKey(code);
 	}
 	public final ArrayList<RedeemCode> getRedeemCodes() {
 		return this.Redeemcodes;

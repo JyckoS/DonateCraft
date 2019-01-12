@@ -38,6 +38,9 @@ public final class ACCashBank {
 		}
 		return instance;
 	}
+	public final void removeACWallet(UUID uuid) {
+		accs.remove(uuid);
+	}
 	public final void setACWallet(final Player p, final ACWallet ac) {
 		this.accs.put(p.getUniqueId(), ac);
 	}
@@ -57,6 +60,7 @@ public final class ACCashBank {
 		return accs.get(uuid);
 	}
 	public final void resetTOPACashBalance() {
+		if (DataStorage.getInstance().useSQL()) return;
 		TOP_ACASH_BALANCES.clear();
 		final File folder = new File(DonateCraft.getInstance().getDataFolder(), "playerdata");
 		if (!folder.exists()) {
@@ -94,6 +98,7 @@ public final class ACCashBank {
 		}
 	}
 	public void resetACashBalance() {
+		if (DataStorage.getInstance().useSQL()) return;
 		cacheaccash.clear();
 		TOP_ACASH_BALANCES.clear();
 		final File folder = new File(DonateCraft.getInstance().getDataFolder(), "playerdata");
@@ -112,6 +117,7 @@ public final class ACCashBank {
 			if (!caches.contains(acs)) {
 			caches.add(acs);
 			}
+			
 			accs.put(uuid, new ACWallet(acs));
 			if (owners.containsKey(acs)) {
 				ArrayList<String> ownerz = owners.get(acs);

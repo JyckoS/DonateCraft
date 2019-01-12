@@ -52,7 +52,7 @@ public final  class DataStorage {
 		final Boolean use_sql = config.getBoolean("MySQL.use_sql");
 		this.Use_sql = use_sql;
 		if (use_sql) {
-			thesql = SimpleSQL.setup(config.getString("MySQL.host"), config.getInt("MySQL.port"), config.getString("database"), config.getString("user"), config.getString("pass"));
+			thesql = SimpleSQL.setup(config.getString("MySQL.host"), config.getInt("MySQL.port"), config.getString("MySQL.database"), config.getString("MySQL.username"), config.getString("MySQL.password"));
 			
 		}
 		final Boolean varitem_original_lore = items.getBoolean("variable.use_original_lore");

@@ -63,6 +63,13 @@ public final class RedeemCmdHandler {
 			return;
 		}
 		final RedeemCode rcode = storage.getRedeemCode(code);
+		if (rcode.isUsed()) {
+			for (String str : ls.getMessage(LongMessage.REDEEM_FAIL)) {
+				Utility.sendMsg(p, str);
+			}
+			return;
+		}
+		rcode.used();
 		final Cash cash = rcode.getCash();
 		final int amount = cash.getCashAmount();
 		Cash pcash;

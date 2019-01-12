@@ -2,6 +2,7 @@ package com.gmail.JyckoSianjaya.DonateCraft.Data;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
@@ -33,6 +34,7 @@ public final class PlayerData {
 		return instance;
 	}
 	public final void setData(final Player p, final Cash cash) {
+		if (DataStorage.getInstance().useSQL()) return;
 		DCRunnable.getInstance().addTask(new DCTask(){
 			int health = 1;
 			@Override
@@ -127,18 +129,31 @@ public final class PlayerData {
 	public final ACWallet getSQLACCash(final UUID p) {
 		final YamlConfiguration yml = this.getSQLData(p);
 		int cash = yml.getInt("ac-cash");
-		return new ACWallet(cash);
+		ACWallet wallet = new ACWallet(cash);
+		ACCashBank.getInstance().setACWallet(p, wallet);
+		return wallet;
 	}
 	public final Cash getSQLCash(final UUID p) {
 		final YamlConfiguration yml = this.getSQLData(p);
 		int cash = yml.getInt("cash");
-		return new Cash(cash);
+		Cash cas = new Cash(cash);
+		CashBank.getInstance().setCash(p, cas);
+		return cas;
 	}
 	public final YamlConfiguration getSQLData(final UUID p) {
-		File f = new File(DonateCraft.getInstance().getDataFolder(), "Actions.yml");
+		File f = new File(DonateCraft.getInstance().getDataFolder(), "DummyData.yml");
 		YamlConfiguration yml = YamlConfiguration.loadConfiguration(f);
+		yml.set("uuid", p.toString());
+		if (!SimpleSQL.getInstance().hasRecord(p.toString())) {
+			String todo = "INSERT INTO DCPlayerData (uuid, data) VALUES (\"" + p.toString() + "\"," + "\"" + yml.saveToString() + "\")";
+			SimpleSQL.getInstance().getUpdate(todo);
+			return yml;
+		}
 		try {
-			yml.loadFromString(SimpleSQL.getInstance().getResult("SELECT data FROM DCPlayerData WHERE uuid='" + p.toString() + "';").getString("data"));
+			ResultSet result = SimpleSQL.getInstance().getResult("SELECT * FROM DCPlayerData WHERE uuid='" + p.toString() + "'");
+			while (result.next()) {
+				yml.loadFromString(result.getString("data"));
+			}
 		} catch (InvalidConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -153,6 +168,7 @@ public final class PlayerData {
 		UUID p = UUID.fromString(yml.getString("uuid"));
 		if (CashBank.getInstance().getCash(p) != null) {
 			cash = CashBank.getInstance().getCash(p);
+			CashBank.getInstance().removeCash(p);
 		}
 		yml.set("cash", cash.getCashAmount());
 		yml.set("uuid", p.toString());
@@ -173,15 +189,26 @@ public final class PlayerData {
 		}
 		if (accw.getAmount() <=0 && cash.getCashAmount() <= 0) return;
 		yml.set("ac-cash", accw.getAmount());
-
-		SimpleSQL.getInstance().getResult("UPDATE DCPlayerData SET data='" + yml.toString() + "' WHERE uuid='" + p.toString() +"';");
+		if (!SimpleSQL.getInstance().hasRecord(p.toString())) {
+			SimpleSQL.getInstance().getUpdate("INSERT INTO DCPlayerData (uuid, data) VALUES ('" + p.toString() + "', '" + yml.saveToString() + "')");
+		}
+		SimpleSQL.getInstance().getUpdate("UPDATE DCPlayerData SET data='" + yml.saveToString() + "' WHERE uuid='" + p.toString() +"'");
 	}
 	public final void setData(final UUID p) {
+		if (DataStorage.getInstance().useSQL()) return;
 		final File f = new File(MainInst.getDataFolder(), "playerdata" + File.separator +  p + ".yml");
+		if (!f.exists()) {
+			try {
+			f.createNewFile();
+			} catch (IOException e) {
+
+			}
+		}
 		final YamlConfiguration file = YamlConfiguration.loadConfiguration(f);
 		Cash cash = new Cash(0);
 		if (CashBank.getInstance().getCash(p) != null) {
 			cash = CashBank.getInstance().getCash(p);
+			CashBank.getInstance().removeCash(p);
 		}
 		file.set("cash", cash.getCashAmount());
 		file.set("uuid", p.toString());
@@ -199,18 +226,20 @@ public final class PlayerData {
 	    ACWallet accw = new ACWallet(0);
 		if (acbank.getACWallet(p) != null) {
 			accw = acbank.getACWallet(p);
+			acbank.removeACWallet(p);
 		}
 		if (accw.getAmount() <=0 && cash.getCashAmount() <= 0) return;
 		file.set("ac-cash", accw.getAmount());
 		try {
-		if (!f.exists()) {
-			f.createNewFile();
-		}
-		file.save(f);
+			file.save(f);
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	public final ACWallet getACCash(final UUID uuid) {
+		if (DataStorage.getInstance().useSQL()) return null;
+
 		final UUID uu = uuid;
 		final File pfile = new File(MainInst.getDataFolder(), "playerdata" + File.separator + uu + ".yml");
 		final YamlConfiguration pyml = YamlConfiguration.loadConfiguration(pfile);
@@ -239,9 +268,10 @@ public final class PlayerData {
 	}
 
 	public final Cash getCash(final UUID uuid) {
+		if (DataStorage.getInstance().useSQL()) return null;
 		Cash cash2 = null;
 		final UUID uu = uuid;
-		final File pfile = new File(MainInst.getDataFolder(), "playerdata" + File.separator + uu + ".yml");
+		final File pfile = new File(MainInst.getDataFolder(), "playerdata" + File.separator + uu.toString() + ".yml");
 		final YamlConfiguration pyml = YamlConfiguration.loadConfiguration(pfile);
 		if (!pfile.exists()) {
 			return null;
@@ -270,9 +300,11 @@ public final class PlayerData {
 		return cash2;
 	}
 	public final Cash getCash(final Player p) {
+		if (DataStorage.getInstance().useSQL()) return null;
+
 		Cash cash2 = null;
 		final UUID uu = p.getUniqueId();
-		final File pfile = new File(MainInst.getDataFolder(), "playerdata" + File.separator + uu + ".yml");
+		final File pfile = new File(MainInst.getDataFolder(), "playerdata" + File.separator + uu.toString() + ".yml");
 		final YamlConfiguration pyml = YamlConfiguration.loadConfiguration(pfile);
 		if (!pfile.exists()) {
 			return null;

@@ -432,15 +432,17 @@ public final class DCEventHandler {
 		}
 		DCRunnable.getInstance().addTask(new DCTask() {
 			int health = 1;
+			String uuid = e.getPlayer().getUniqueId().toString();
 			@Override
 			public void runTask() {
 		SimpleSQL sql = SimpleSQL.getInstance();
+		if (!sql.hasRecord(uuid)) return;
 		String uuid = e.getPlayer().getUniqueId().toString();
 		YamlConfiguration yml = YamlConfiguration.loadConfiguration(new File(DonateCraft.getInstance().getDataFolder(), "DummyData.yml"));
-		ResultSet resultset = sql.getResult("SELECT data FROM DCPlayerData WHERE uuid='" + uuid + "';");
+		ResultSet resultset = sql.getResult("SELECT * FROM DCPlayerData WHERE uuid='" + uuid + "'");
 		try {
 			if (!resultset.next()) {
-				sql.getResult("INSERT OR IGNORE INTO DCPlayerData (uuid, data) VALUES ('" + uuid + "', " + "'" + yml + "');");
+				sql.getUpdate("INSERT OR IGNORE INTO DCPlayerData (uuid, data) VALUES ('" + uuid + "', " + "'" + yml + "')");
 
 			}
 		} catch (SQLException e3) {
@@ -448,7 +450,7 @@ public final class DCEventHandler {
 			e3.printStackTrace();
 		}
 		if (!sql.hasRecord(uuid)) return;
-		resultset = sql.getResult("SELECT data FROM DCPlayerData WHERE uuid='" + uuid + "';");
+		resultset = sql.getResult("SELECT * FROM DCPlayerData WHERE uuid='" + uuid + "'");
 		String data = "";
 		try {
 			data = resultset.getString("data");
@@ -492,7 +494,7 @@ public final class DCEventHandler {
 		if (cash == null) {
 			return;
 		}
-		pd.setData(p, cash);
+		pd.setData(p.getUniqueId());
 		return;
 		}
 		if (bank.getCash(e.getPlayer()) == null) return;
@@ -503,15 +505,8 @@ public final class DCEventHandler {
 		SimpleSQL sql = SimpleSQL.getInstance();
 		String uuid = e.getPlayer().getUniqueId().toString();
 		YamlConfiguration yml = PlayerData.getInstance().getData(e.getPlayer().getUniqueId());
-		ResultSet resultset = sql.getResult("INSERT OR IGNORE INTO DCPlayerData (uuid, data) VALUES ('" + uuid + "', " + "'" + yml.toString() + "');");
-		sql.getResult("UPDATE DCPlayerData SET data='" + yml.toString() + "' WHERE uuid='" + uuid + "';");
-		if (resultset == null) return;
-		try {
-			if (resultset.wasNull()) return;
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		sql.getUpdate("INSERT OR IGNORE INTO DCPlayerData (uuid, data) VALUES ('" + uuid + "', " + "'" + yml.toString() + "')");
+		sql.getUpdate("UPDATE DCPlayerData SET data='" + yml.toString() + "' WHERE uuid='" + uuid + "'");
 		}
 
 			@Override

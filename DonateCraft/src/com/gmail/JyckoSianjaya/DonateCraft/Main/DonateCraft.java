@@ -158,6 +158,7 @@ public final class DonateCraft extends JavaPlugin {
 		}
 	}
 	private final void saveAllCash() {
+		if (DataStorage.getInstance().useSQL()) return;
 		final CashBank bank = CashBank.getInstance();
 		final PlayerData pd = PlayerData.getInstance();
 		for (final UUID p : this.cb.getKeys()) {

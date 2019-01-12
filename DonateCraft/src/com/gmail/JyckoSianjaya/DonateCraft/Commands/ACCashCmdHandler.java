@@ -174,14 +174,20 @@ public final class ACCashCmdHandler {
 				DCRunnable.getInstance().addTask(new DCTask() {
 					final UUID uu = UUID.fromString(uud);
 					int health = 1;
+					Boolean run = false;
 					@Override
 					public void runTask() {
 						// TODO Auto-generated method stub
-						if (!DataStorage.getInstance().useSQL()) {
-							PlayerData.getInstance().setData(uu);
-							return; }
-							PlayerData.getInstance().saveData(PlayerData.getInstance().getSQLData(UUID.fromString(uud)));
-					}
+						if (prr != null || !DataStorage.getInstance().useSQL()) {
+						PlayerData.getInstance().setData(uu);
+						return;
+						}
+						if (run) return;
+						run = true;
+						PlayerData.getInstance().saveData(PlayerData.getInstance().getSQLData(uu));
+						return;
+					}		
+	
 					@Override
 					public void reduceTicks() {
 						// TODO Auto-generated method stub
@@ -202,11 +208,19 @@ public final class ACCashCmdHandler {
 			DCRunnable.getInstance().addTask(new DCTask() {
 				final UUID uu = UUID.fromString(uud);
 				int health = 1;
+				Boolean run = false;
 				@Override
 				public void runTask() {
 					// TODO Auto-generated method stub
+					if (prr != null || !DataStorage.getInstance().useSQL()) {
 					PlayerData.getInstance().setData(uu);
-				}
+					return;
+					}
+					if (run) return;
+					run = true;
+					PlayerData.getInstance().saveData(PlayerData.getInstance().getSQLData(uu));
+					return;
+				}		
 				@Override
 				public void reduceTicks() {
 					// TODO Auto-generated method stub
@@ -262,13 +276,19 @@ public final class ACCashCmdHandler {
 				DCRunnable.getInstance().addTask(new DCTask() {
 					final UUID uu = UUID.fromString(uud);
 					int health = 1;
+					Boolean run = false;
 					@Override
 					public void runTask() {
 						// TODO Auto-generated method stub
-						if (!DataStorage.getInstance().useSQL()) {
-							PlayerData.getInstance().setData(uu);
-							return; }
-							PlayerData.getInstance().saveData(PlayerData.getInstance().getSQLData(UUID.fromString(uud)));				}
+						if (eprr != null || !DataStorage.getInstance().useSQL()) {
+						PlayerData.getInstance().setData(uu);
+						return;
+						}
+						if (run) return;
+						run = true;
+						PlayerData.getInstance().saveData(PlayerData.getInstance().getSQLData(uu));
+						return;
+					}
 					@Override
 					public void reduceTicks() {
 						// TODO Auto-generated method stub
@@ -289,11 +309,19 @@ public final class ACCashCmdHandler {
 			DCRunnable.getInstance().addTask(new DCTask() {
 				final UUID uu = UUID.fromString(uud);
 				int health = 1;
+				Boolean run = false;
 				@Override
 				public void runTask() {
 					// TODO Auto-generated method stub
+					if (eprr != null || !DataStorage.getInstance().useSQL()) {
 					PlayerData.getInstance().setData(uu);
-				}
+					return;
+					}
+					if (run) return;
+					run = true;
+					PlayerData.getInstance().saveData(PlayerData.getInstance().getSQLData(uu));
+					return;
+				}		
 				@Override
 				public void reduceTicks() {
 					// TODO Auto-generated method stub
@@ -349,14 +377,19 @@ public final class ACCashCmdHandler {
 				DCRunnable.getInstance().addTask(new DCTask() {
 					final UUID uu = UUID.fromString(uud);
 					int health = 1;
+					Boolean run = false;
 					@Override
 					public void runTask() {
 						// TODO Auto-generated method stub
-						if (!DataStorage.getInstance().useSQL()) {
-							PlayerData.getInstance().setData(uu);
-							return; }
-							PlayerData.getInstance().saveData(PlayerData.getInstance().getSQLData(UUID.fromString(uud)));			}
-					@Override
+						if (rprr != null || !DataStorage.getInstance().useSQL()) {
+						PlayerData.getInstance().setData(uu);
+						return;
+						}
+						if (run) return;
+						run = true;
+						PlayerData.getInstance().saveData(PlayerData.getInstance().getSQLData(uu));
+						return;
+					}					@Override
 					public void reduceTicks() {
 						// TODO Auto-generated method stub
 						health--;
@@ -375,13 +408,18 @@ public final class ACCashCmdHandler {
 			DCRunnable.getInstance().addTask(new DCTask() {
 				final UUID uu = UUID.fromString(uud);
 				int health = 1;
+				Boolean run = false;
 				@Override
 				public void runTask() {
 					// TODO Auto-generated method stub
-					if (!DataStorage.getInstance().useSQL()) {
-						PlayerData.getInstance().setData(uu);
-						return; }
-						PlayerData.getInstance().saveData(PlayerData.getInstance().getSQLData(UUID.fromString(uud)));
+					if (rprr != null || !DataStorage.getInstance().useSQL()) {
+					PlayerData.getInstance().setData(uu);
+					return;
+					}
+					if (run) return;
+					run = true;
+					PlayerData.getInstance().saveData(PlayerData.getInstance().getSQLData(uu));
+					return;
 				}
 				@Override
 				public void reduceTicks() {
@@ -432,7 +470,7 @@ public final class ACCashCmdHandler {
 				ppwallet = acb.getACWallet(target);
 				money = ppwallet.getAmount();
 			}
-			if (DataStorage.getInstance().useSQL()) {
+			if (ppwallet == null && plre == null && DataStorage.getInstance().useSQL()) {
 				ppwallet = PlayerData.getInstance().getSQLACCash(target);
 				money = ppwallet.getAmount();
 			}
